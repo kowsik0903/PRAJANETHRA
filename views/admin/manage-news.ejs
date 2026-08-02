@@ -1,0 +1,189 @@
+<%- include("../layouts/header") %>
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                Manage News
+            </h2>
+
+            <p class="text-muted">
+                Manage all published news articles.
+            </p>
+
+        </div>
+
+        <a href="/admin/news/add"
+           class="btn btn-success rounded-pill px-4">
+
+            ➕ Add News
+
+        </a>
+
+    </div>
+
+    <div class="card shadow border-0">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table align-middle table-hover">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Image</th>
+
+                            <th>Title</th>
+
+                            <th>Category</th>
+
+                            <th>Breaking</th>
+
+                            <th>Status</th>
+
+                            <th>Date</th>
+
+                            <th width="180">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <% news.forEach(item => { %>
+
+                        <tr>
+
+                            <td>
+
+                                <strong>#<%= item.id %></strong>
+
+                            </td>
+
+                            <td>
+
+                                <img
+                                    src="/uploads/<%= item.image %>"
+                                    class="rounded shadow-sm"
+                                    style="width:90px;height:65px;object-fit:cover;">
+
+                            </td>
+
+                            <td>
+
+                                <strong>
+
+                                    <%= item.title %>
+
+                                </strong>
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-primary">
+
+                                    <%= item.category_name %>
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <% if(item.is_breaking == 1){ %>
+
+                                    <span class="badge bg-danger">
+
+                                        🔥 YES
+
+                                    </span>
+
+                                <% }else{ %>
+
+                                    <span class="badge bg-secondary">
+
+                                        NO
+
+                                    </span>
+
+                                <% } %>
+
+                            </td>
+
+                            <td>
+
+                                <% if(item.status=="Published"){ %>
+
+                                    <span class="badge bg-success">
+
+                                        Published
+
+                                    </span>
+
+                                <% }else{ %>
+
+                                    <span class="badge bg-warning text-dark">
+
+                                        Draft
+
+                                    </span>
+
+                                <% } %>
+
+                            </td>
+
+                            <td>
+
+                                <%= new Date(item.created_at).toLocaleDateString() %>
+
+                            </td>
+
+                            <td>
+
+                                <a href="/admin/news/edit/<%= item.id %>"
+                                   class="btn btn-warning btn-sm">
+
+                                    ✏ Edit
+
+                                </a>
+
+                                <a href="/admin/news/delete/<%= item.id %>"
+                                   class="btn btn-danger btn-sm"
+
+                                   onclick="return confirm('Delete this news?')">
+
+                                    🗑 Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>

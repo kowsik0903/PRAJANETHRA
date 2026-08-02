@@ -1,0 +1,128 @@
+<%- include("../layouts/header") %>
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                📧 Contact Messages
+            </h2>
+
+            <p class="text-muted">
+                Messages received from website visitors.
+            </p>
+
+        </div>
+
+    </div>
+
+    <div class="card shadow border-0 rounded-4">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Name</th>
+
+                            <th>Email</th>
+
+                            <th>Subject</th>
+
+                            <th>Message</th>
+
+                            <th>Date</th>
+
+                            <th width="120">
+
+                                Action
+
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                        <% messages.forEach(message=>{ %>
+
+                        <tr>
+
+                            <td>
+
+                                <strong>#<%= message.id %></strong>
+
+                            </td>
+
+                            <td>
+
+                                <%= message.name %>
+
+                            </td>
+
+                            <td>
+
+                                <%= message.email %>
+
+                            </td>
+
+                            <td>
+
+                                <%= message.subject %>
+
+                            </td>
+
+                            <td>
+
+                                <%= message.message.length > 50
+                                    ? message.message.substring(0,50)+"..."
+                                    : message.message %>
+
+                            </td>
+
+                            <td>
+
+                                <%= new Date(message.created_at).toLocaleDateString() %>
+
+                            </td>
+
+                            <td>
+
+                                <a href="/admin/messages/delete/<%= message.id %>"
+                                   class="btn btn-danger btn-sm"
+
+                                   onclick="return confirm('Delete this message?')">
+
+                                    🗑 Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                        <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>

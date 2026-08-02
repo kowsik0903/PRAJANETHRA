@@ -1,0 +1,45 @@
+<section class="hero-slider container mt-4">
+
+    <% if(news.length > 0){ %>
+
+        <div class="position-relative overflow-hidden rounded-12 shadow-custom">
+
+            <img src="/uploads/<%= news[0].image %>"
+                 alt="<%= news[0].title %>"
+                 class="w-100">
+
+            <div class="hero-overlay">
+
+                <span class="hero-category">
+
+                    <%= news[0].category_name %>
+
+                </span>
+
+                <h1>
+
+                    <%= news[0].title %>
+
+                </h1>
+
+                <p>
+
+                    <%= news[0].description %>
+
+                </p>
+
+                <a href="/news/<%= news[0].id %>"
+                   class="hero-btn">
+
+                    Read Full News
+                    <i class="bi bi-arrow-right"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    <% } %>
+
+</section>

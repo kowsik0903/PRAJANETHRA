@@ -1,0 +1,46 @@
+<%- include("../layouts/header") %>
+
+<%- include("../layouts/navbar") %>
+
+<div class="container my-5">
+
+    <h2 class="mb-4">
+        <%= categoryName %> News
+    </h2>
+
+    <div class="row">
+
+        <% news.forEach(item => { %>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card h-100 shadow">
+
+                <img src="/uploads/<%= item.image %>"
+                     class="card-img-top"
+                     style="height:220px;object-fit:cover;">
+
+                <div class="card-body">
+
+                    <h5><%= item.title %></h5>
+
+                    <p><%= item.description %></p>
+
+                    <a href="/news/<%= item.id %>"
+                       class="btn btn-primary">
+                        Read More
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <% }) %>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>

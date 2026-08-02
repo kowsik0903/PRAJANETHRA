@@ -1,0 +1,112 @@
+<%- include("../layouts/header") %>
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold">
+                📂 Manage Categories
+            </h2>
+
+            <p class="text-muted">
+                Create, edit and organize news categories.
+            </p>
+
+        </div>
+
+        <a href="/admin/categories/add"
+           class="btn btn-success rounded-pill px-4">
+
+            ➕ Add Category
+
+        </a>
+
+    </div>
+
+    <div class="card shadow border-0 rounded-4">
+
+        <div class="card-body">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>Category Name</th>
+
+                            <th width="220">
+                                Actions
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <% categories.forEach(category => { %>
+
+                        <tr>
+
+                            <td>
+
+                                <strong>#<%= category.id %></strong>
+
+                            </td>
+
+                            <td>
+
+                                <span class="badge bg-primary fs-6 px-3 py-2">
+
+                                    <%= category.category_name %>
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="/admin/categories/edit/<%= category.id %>"
+                                    class="btn btn-warning btn-sm">
+
+                                    ✏ Edit
+
+                                </a>
+
+                                <a
+                                    href="/admin/categories/delete/<%= category.id %>"
+                                    class="btn btn-danger btn-sm"
+
+                                    onclick="return confirm('Delete this category?')">
+
+                                    🗑 Delete
+
+                                </a>
+
+                            </td>
+
+                        </tr>
+
+                    <% }) %>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>

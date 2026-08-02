@@ -1,0 +1,194 @@
+<%- include("../layouts/header") %>
+
+<%- include("../layouts/navbar") %>
+
+<section class="container">
+
+    <div class="news-details fade-up">
+
+        <!-- Category -->
+
+        <span class="news-category">
+
+            <%= item.category_name %>
+
+        </span>
+
+        <!-- Title -->
+
+        <h1>
+
+            <%= item.title %>
+
+        </h1>
+
+        <!-- Meta -->
+
+        <div class="news-meta">
+
+            <span>
+
+                <i class="bi bi-calendar-event"></i>
+
+                <%= new Date(item.created_at).toLocaleDateString() %>
+
+            </span>
+
+            &nbsp;&nbsp;&nbsp;
+
+            <span>
+
+                <i class="bi bi-person-fill"></i>
+
+                <%= item.author || "NC NEWS" %>
+
+            </span>
+
+        </div>
+
+        <!-- Featured Image -->
+
+        <img src="/uploads/<%= item.image %>"
+             alt="<%= item.title %>">
+
+        <!-- Article -->
+
+        <div class="news-content">
+
+    <%= item.content %>
+
+</div>
+
+<hr class="my-4">
+
+<h5 class="fw-bold mb-3">
+    Share this News
+</h5>
+
+<div class="d-flex flex-wrap gap-2 mb-4">
+
+    <!-- WhatsApp -->
+    <a href="#"
+       class="btn btn-success"
+       onclick="shareWhatsApp()">
+
+        <i class="bi bi-whatsapp"></i>
+        WhatsApp
+
+    </a>
+
+    <!-- Facebook -->
+    <a href="#"
+       class="btn btn-primary"
+       onclick="shareFacebook()">
+
+        <i class="bi bi-facebook"></i>
+        Facebook
+
+    </a>
+
+    <!-- Telegram -->
+    <a href="#"
+       class="btn btn-info text-white"
+       onclick="shareTelegram()">
+
+        <i class="bi bi-telegram"></i>
+        Telegram
+
+    </a>
+
+    <!-- X -->
+    <a href="#"
+       class="btn btn-dark"
+       onclick="shareTwitter()">
+
+        <i class="bi bi-twitter-x"></i>
+        X
+
+    </a>
+
+    <!-- Copy Link -->
+    <button
+        class="btn btn-secondary"
+        onclick="copyLink()">
+
+        <i class="bi bi-link-45deg"></i>
+        Copy Link
+
+    </button>
+
+</div>
+
+<script>
+
+function shareWhatsApp(){
+    window.open(
+        "https://wa.me/?text=" +
+        encodeURIComponent(document.title + "\n" + window.location.href),
+        "_blank"
+    );
+}
+
+function shareFacebook(){
+    window.open(
+        "https://www.facebook.com/sharer/sharer.php?u=" +
+        encodeURIComponent(window.location.href),
+        "_blank"
+    );
+}
+
+function shareTelegram(){
+    window.open(
+        "https://t.me/share/url?url=" +
+        encodeURIComponent(window.location.href),
+        "_blank"
+    );
+}
+
+function shareTwitter(){
+    window.open(
+        "https://twitter.com/intent/tweet?url=" +
+        encodeURIComponent(window.location.href),
+        "_blank"
+    );
+}
+
+function copyLink(){
+
+    navigator.clipboard.writeText(window.location.href);
+
+    alert("✅ Link copied successfully!");
+
+}
+
+</script>
+
+<hr class="my-4">
+
+        <hr class="my-4">
+
+        <div class="d-flex justify-content-between align-items-center">
+            
+
+            <a href="/"
+               class="btn btn-outline-danger">
+
+                ← Back to Home
+
+            </a>
+
+            <button
+                class="btn btn-danger"
+                onclick="window.print()">
+
+                🖨 Print News
+
+            </button>
+
+        </div>
+
+    </div>
+
+</section>
+
+<%- include("../layouts/footer") %>

@@ -1,0 +1,209 @@
+<%- include("../layouts/header") %>
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-10">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <div class="card-header bg-warning text-dark py-3">
+
+                    <h3 class="mb-0">
+                        ✏️ Edit News Article
+                    </h3>
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form action="/admin/news/edit/<%= item.id %>" method="POST" enctype="multipart/form-data">
+
+                        <!-- Title -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+
+                                News Title
+
+                            </label>
+
+                            <input
+                                type="text"
+                                name="title"
+                                class="form-control form-control-lg"
+                                value="<%= item.title %>"
+                                required>
+
+                        </div>
+
+                        <!-- Category -->
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label fw-bold">
+
+                                    Category
+
+                                </label>
+
+                                <select
+                                    name="category_id"
+                                    class="form-select form-select-lg">
+
+                                    <% categories.forEach(category=>{ %>
+
+                                        <option
+                                            value="<%= category.id %>"
+                                            <%= category.id==item.category_id ? "selected" : "" %>>
+
+                                            <%= category.category_name %>
+
+                                        </option>
+
+                                    <% }) %>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label fw-bold">
+
+                                    Breaking News
+
+                                </label>
+
+                                <div class="form-check mt-3">
+
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        name="is_breaking"
+                                        value="1"
+                                        id="breaking"
+                                        <%= item.is_breaking ? "checked" : "" %>>
+
+                                    <label
+                                        class="form-check-label"
+                                        for="breaking">
+
+                                        🔥 Mark as Breaking News
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Description -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+
+                                Short Description
+
+                            </label>
+
+                            <textarea
+                                name="description"
+                                rows="4"
+                                class="form-control"><%= item.description %></textarea>
+
+                        </div>
+
+                        <!-- Content -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+
+                                Full News Content
+
+                            </label>
+
+                            <textarea
+                                name="content"
+                                rows="10"
+                                class="form-control"><%= item.content %></textarea>
+
+                        </div>
+
+                        <!-- Current Image -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+
+                                Current Image
+
+                            </label>
+
+                            <br>
+
+                            <img
+                                src="/uploads/<%= item.image %>"
+                                class="img-fluid rounded shadow"
+                                style="max-width:300px;">
+
+                        </div>
+
+                        <!-- Upload New Image -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+
+                                Change Image
+
+                            </label>
+
+                            <input
+                                type="file"
+                                name="image"
+                                class="form-control">
+
+                        </div>
+
+                        <!-- Buttons -->
+
+                        <div class="d-flex gap-3">
+
+                            <button
+                                class="btn btn-warning btn-lg px-4">
+
+                                💾 Update News
+
+                            </button>
+
+                            <a
+                                href="/admin/news"
+                                class="btn btn-secondary btn-lg px-4">
+
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>

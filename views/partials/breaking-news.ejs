@@ -1,0 +1,41 @@
+<section class="breaking-news">
+
+    <div class="breaking-label">
+        🔥 BREAKING
+    </div>
+
+    <div class="breaking-wrapper">
+
+        <div class="breaking-track">
+
+            <% breakingNews.forEach(item => { %>
+
+                <a href="/news/<%= item.id %>">
+
+                    <%= item.title %>
+
+                </a>
+
+                <span class="separator">●</span>
+
+            <% }) %>
+
+            <!-- Duplicate for smooth continuous scrolling -->
+
+            <% breakingNews.forEach(item => { %>
+
+                <a href="/news/<%= item.id %>">
+
+                    <%= item.title %>
+
+                </a>
+
+                <span class="separator">●</span>
+
+            <% }) %>
+
+        </div>
+
+    </div>
+
+</section>

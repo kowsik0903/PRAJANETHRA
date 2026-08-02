@@ -1,0 +1,62 @@
+<%- include("../layouts/header") %>
+
+<%- include("../layouts/navbar") %>
+
+<div class="container my-5">
+
+    <h2 class="mb-4">
+        Search Results for "<%= keyword %>"
+    </h2>
+
+    <% if(news.length === 0){ %>
+
+        <div class="alert alert-warning">
+            No news found.
+        </div>
+
+    <% } %>
+
+    <div class="row">
+
+        <% news.forEach(item => { %>
+
+        <div class="col-md-4 mb-4">
+
+            <div class="card h-100">
+
+                <img src="/uploads/<%= item.image %>"
+                     class="card-img-top"
+                     style="height:220px;object-fit:cover;">
+
+                <div class="card-body">
+
+                    <span class="badge bg-danger">
+                        <%= item.category_name %>
+                    </span>
+
+                    <h5 class="mt-2">
+                        <%= item.title %>
+                    </h5>
+
+                    <p>
+                        <%= item.description %>
+                    </p>
+
+                    <a href="/news/<%= item.id %>"
+                       class="btn btn-primary">
+                        Read More
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <% }) %>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>

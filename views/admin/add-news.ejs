@@ -1,0 +1,187 @@
+<%- include("../layouts/header") %>
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-10">
+
+            <div class="card shadow-lg border-0 rounded-4">
+
+                <div class="card-header bg-danger text-white py-3">
+
+                    <h3 class="mb-0">
+                        📰 Add News Article
+                    </h3>
+
+                </div>
+
+                <div class="card-body p-4">
+
+                    <form action="/api/news" method="POST" enctype="multipart/form-data">
+
+                        <!-- Title -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+                                News Title
+                            </label>
+
+                            <input
+                                type="text"
+                                name="title"
+                                class="form-control form-control-lg"
+                                placeholder="Enter News Title"
+                                required>
+
+                        </div>
+
+                        <!-- Category & Breaking -->
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label fw-bold">
+
+                                    Category
+
+                                </label>
+
+                                <select
+                                    name="category_id"
+                                    class="form-select form-select-lg">
+
+                                    <% categories.forEach(category=>{ %>
+
+                                        <option value="<%= category.id %>">
+
+                                            <%= category.category_name %>
+
+                                        </option>
+
+                                    <% }) %>
+
+                                </select>
+
+                            </div>
+
+                            <div class="col-md-6 mb-4">
+
+                                <label class="form-label fw-bold">
+
+                                    Breaking News
+
+                                </label>
+
+                                <div class="form-check mt-3">
+
+                                    <input
+                                        class="form-check-input"
+                                        type="checkbox"
+                                        value="1"
+                                        name="is_breaking"
+                                        id="breaking">
+
+                                    <label
+                                        class="form-check-label"
+                                        for="breaking">
+
+                                        🔥 Mark as Breaking News
+
+                                    </label>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- Description -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+
+                                Short Description
+
+                            </label>
+
+                            <textarea
+                                name="description"
+                                rows="4"
+                                class="form-control"
+                                placeholder="Short Description"></textarea>
+
+                        </div>
+
+                        <!-- Content -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+
+                                Full News Content
+
+                            </label>
+
+                            <textarea
+                                name="content"
+                                rows="10"
+                                class="form-control"
+                                placeholder="Write complete news here..."></textarea>
+
+                        </div>
+
+                        <!-- Image -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-bold">
+
+                                Upload Image
+
+                            </label>
+
+                            <input
+                                type="file"
+                                name="image"
+                                class="form-control">
+
+                        </div>
+
+                        <!-- Buttons -->
+
+                        <div class="d-flex gap-3">
+
+                            <button
+                                class="btn btn-success btn-lg px-4">
+
+                                💾 Publish News
+
+                            </button>
+
+                            <a
+                                href="/admin/news"
+                                class="btn btn-secondary btn-lg px-4">
+
+                                Cancel
+
+                            </a>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>
