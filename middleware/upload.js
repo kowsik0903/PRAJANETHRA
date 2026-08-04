@@ -5,25 +5,22 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, "public/uploads");
     },
-
     filename: (req, file, cb) => {
-        const uniqueName = Date.now() + path.extname(file.originalname);
-        cb(null, uniqueName);
+        cb(null, Date.now() + path.extname(file.originalname));
     }
 });
 
 const fileFilter = (req, file, cb) => {
+    const allowed = /jpeg|jpg|png|webp/;
 
-    const allowedTypes = /jpeg|jpg|png|webp/;
+    const valid =
+        allowed.test(file.mimetype) &&
+        allowed.test(path.extname(file.originalname).toLowerCase());
 
-    const isValid =
-        allowedTypes.test(file.mimetype) &&
-        allowedTypes.test(path.extname(file.originalname).toLowerCase());
-
-    if (isValid) {
+    if (valid) {
         cb(null, true);
     } else {
-        cb(new Error("Only JPG, JPEG, PNG and WEBP images are allowed."));
+        cb(new Error("Only JPG, JPEG, PNG and WEBP are allowed."));
     }
 };
 

@@ -20,9 +20,9 @@
     "ejs": "^6.0.1",
     "express": "^5.2.1",
     "express-session": "^1.19.0",
+    "fs-extra": "^11.4.0",
     "jsonwebtoken": "^9.0.3",
     "multer": "^2.2.0",
-    "multer-storage-cloudinary": "^4.0.0",
     "mysql2": "^3.23.2"
   },
   "devDependencies": {

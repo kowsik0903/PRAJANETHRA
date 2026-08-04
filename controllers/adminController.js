@@ -1,7 +1,7 @@
 
-
+const cloudinary = require("../config/cloudinary");
 const db = require("../config/db");
-
+const fs = require("fs");
 
 exports.loginPage = (req, res) => {
     res.render("admin/login");
@@ -76,49 +76,101 @@ exports.addNewsPage = (req, res) => {
 
 };
 
-exports.saveNews = (req, res) => {
+exports.saveNews = async (req, res) => {
 
-    const {
-        title,
-        description,
-        content,
-        category_id
-    } = req.body;
+    console.log("========== FILE ==========");
+    console.log(req.file);
+    console.log("==========================");
 
-    const is_breaking = req.body.is_breaking ? 1 : 0;
+    try {
 
-    const image = req.file ? req.file.filename : null;
+        const {
+            title,
+            description,
+            content,
+            category_id
+        } = req.body;
 
-    const sql = `
-        INSERT INTO news
-        (title, description, content, category_id, image, is_breaking)
-        VALUES (?, ?, ?, ?, ?, ?)
-    `;
+        const is_breaking = req.body.is_breaking ? 1 : 0;
 
-    db.query(
-        sql,
-        [
+        let image = null;
+
+        if (req.file) {
+
+            const result = await cloudinary.uploader.upload(req.file.path, {
+    folder: "nc-news-portal"
+});
+
+console.log("========== CLOUDINARY ==========");
+console.log(result);
+console.log("================================");
+
+image = result.secure_url;
+
+console.log("Image URL:", image);
+
+// Delete the local file after successful Cloudinary upload
+fs.unlink(req.file.path, (err) => {
+    if (err) {
+        console.log("❌ Error deleting local file:", err);
+    } else {
+        console.log("✅ Local file deleted successfully.");
+    }
+});
+        }
+
+        console.log("========== INSERT DATA ==========");
+        console.log({
             title,
             description,
             content,
             category_id,
             image,
             is_breaking
-        ],
-        (err) => {
+        });
+        console.log("=================================");
 
-            if (err) {
-                return res.send(err);
+        const sql = `
+            INSERT INTO news
+            (title, description, content, category_id, image, is_breaking)
+            VALUES (?, ?, ?, ?, ?, ?)
+        `;
+
+        db.query(
+            sql,
+            [
+                title,
+                description,
+                content,
+                category_id,
+                image,
+                is_breaking
+            ],
+            (err) => {
+
+                if (err) {
+                    console.log("========== MYSQL ERROR ==========");
+                    console.error(err);
+                    console.log("=================================");
+                    return res.send(err);
+                }
+
+                console.log("✅ News inserted successfully");
+
+                req.flash("success", "News added successfully.");
+                res.redirect("/admin/news");
             }
+        );
 
-            req.flash("success", "News added successfully.");
-res.redirect("/admin/news");
+    } catch (err) {
 
-        }
-    );
+        console.log("========== CATCH ERROR ==========");
+        console.error(err);
+        console.log("=================================");
 
+        res.send(err.message);
+    }
 };
-
 exports.manageNews = (req, res) => {
 
     const sql = `
@@ -188,75 +240,91 @@ exports.editNewsPage = (req, res) => {
 
 };
 
-exports.updateNews = (req, res) => {
+exports.updateNews = async (req, res) => {
+    try {
+        const id = req.params.id;
 
-    const id = req.params.id;
+        const {
+            title,
+            description,
+            content,
+            category_id
+        } = req.body;
 
-    const {
-    title,
-    description,
-    content,
-    category_id
-} = req.body;
+        const is_breaking = req.body.is_breaking ? 1 : 0;
 
-const is_breaking = req.body.is_breaking ? 1 : 0;
+        let sql;
+        let values;
 
-    let sql;
-    let values;
+        if (req.file) {
 
-    if (req.file) {
-
-        sql = `
-UPDATE news
-SET title=?,
-    description=?,
-    content=?,
-    category_id=?,
-    is_breaking=?,
-    image=?
-WHERE id=?`;
-
-       values = [
-    title,
-    description,
-    content,
-    category_id,
-    is_breaking,
-    req.file.filename,
-    id
-];
+            fs.unlink(req.file.path, (err) => {
+    if (err) {
+        console.log("Error deleting local file:", err);
     } else {
-
-        sql = `
-UPDATE news
-SET title=?,
-    description=?,
-    content=?,
-    category_id=?,
-    is_breaking=?
-WHERE id=?`;
-
-        values = [
-    title,
-    description,
-    content,
-    category_id,
-    is_breaking,
-    id
-];
+        console.log("Local file deleted successfully.");
     }
+});
 
-    db.query(sql, values, (err) => {
+            sql = `
+                UPDATE news
+                SET title=?,
+                    description=?,
+                    content=?,
+                    category_id=?,
+                    is_breaking=?,
+                    image=?
+                WHERE id=?
+            `;
 
-        if (err) return res.send(err);
+            values = [
+                title,
+                description,
+                content,
+                category_id,
+                is_breaking,
+                result.secure_url,
+                id
+            ];
 
-        req.flash("success", "News updated successfully.");
-res.redirect("/admin/news");
+        } else {
 
-    });
+            sql = `
+                UPDATE news
+                SET title=?,
+                    description=?,
+                    content=?,
+                    category_id=?,
+                    is_breaking=?
+                WHERE id=?
+            `;
 
+            values = [
+                title,
+                description,
+                content,
+                category_id,
+                is_breaking,
+                id
+            ];
+        }
+
+        db.query(sql, values, (err) => {
+
+            if (err) {
+                return res.send(err);
+            }
+
+            req.flash("success", "News updated successfully.");
+            res.redirect("/admin/news");
+
+        });
+
+    } catch (err) {
+        console.error(err);
+        res.send(err.message);
+    }
 };
-
 exports.login = (req, res) => {
 
     const { email, password } = req.body;
