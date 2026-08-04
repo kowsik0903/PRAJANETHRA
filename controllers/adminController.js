@@ -255,39 +255,44 @@ exports.updateNews = async (req, res) => {
 
         let sql;
         let values;
+if (req.file) {
 
-        if (req.file) {
+    // Upload image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.file.path, {
+        folder: "nc-news-portal"
+    });
 
-            fs.unlink(req.file.path, (err) => {
-    if (err) {
-        console.log("Error deleting local file:", err);
-    } else {
-        console.log("Local file deleted successfully.");
-    }
-});
-
-            sql = `
-                UPDATE news
-                SET title=?,
-                    description=?,
-                    content=?,
-                    category_id=?,
-                    is_breaking=?,
-                    image=?
-                WHERE id=?
-            `;
-
-            values = [
-                title,
-                description,
-                content,
-                category_id,
-                is_breaking,
-                result.secure_url,
-                id
-            ];
-
+    // Delete local image after successful upload
+    fs.unlink(req.file.path, (err) => {
+        if (err) {
+            console.log("Error deleting local file:", err);
         } else {
+            console.log("Local file deleted successfully.");
+        }
+    });
+
+    sql = `
+        UPDATE news
+        SET title=?,
+            description=?,
+            content=?,
+            category_id=?,
+            is_breaking=?,
+            image=?
+        WHERE id=?
+    `;
+
+    values = [
+        title,
+        description,
+        content,
+        category_id,
+        is_breaking,
+        result.secure_url,
+        id
+    ];
+
+}else {
 
             sql = `
                 UPDATE news
