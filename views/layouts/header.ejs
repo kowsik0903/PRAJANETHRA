@@ -16,7 +16,9 @@
       content="<%= typeof item !== 'undefined' ? item.description : 'Latest Telugu News' %>">
 
 <meta property="og:image"
-      content="<%= typeof item !== 'undefined' ? item.image : 'https://your-domain.com/logo.png' %>">
+      content="<%= typeof item !== 'undefined'
+      ? ('https://prajanethra.onrender.com' + item.image)
+      : 'https://prajanethra.onrender.com/logo.png' %>">
 
 <meta property="og:url"
       content="<%= typeof item !== 'undefined'
