@@ -377,7 +377,7 @@ exports.logout = (req, res) => {
 
         res.clearCookie("connect.sid");
 
-        res.redirect("/admin/login");
+        res.redirect("/");
 
     });
 
