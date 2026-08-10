@@ -1,0 +1,99 @@
+<!-- Video News -->
+
+<div class="container my-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                🎥 Video News
+            </h2>
+
+            <p class="text-muted mb-0">
+                Latest news videos from PRAJANETHRA
+            </p>
+        </div>
+
+        <a href="/videos" class="btn btn-danger">
+            View All Videos
+        </a>
+
+    </div>
+
+
+    <% if (videos && videos.length > 0) { %>
+
+        <div class="row g-4">
+
+            <% videos.forEach(video => { %>
+
+                <div class="col-lg-4 col-md-6">
+
+                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+
+                        <div class="ratio ratio-16x9">
+
+                            <%
+                                let videoId = "";
+
+                                if (video.youtube_url.includes("watch?v=")) {
+
+                                    videoId = video.youtube_url
+                                        .split("watch?v=")[1]
+                                        .split("&")[0];
+
+                                } else if (video.youtube_url.includes("youtu.be/")) {
+
+                                    videoId = video.youtube_url
+                                        .split("youtu.be/")[1]
+                                        .split("?")[0];
+
+                                }
+                            %>
+
+                            <iframe
+                                src="https://www.youtube.com/embed/<%= videoId %>"
+                                title="<%= video.title %>"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                            <h5 class="fw-bold">
+                                <%= video.title %>
+                            </h5>
+
+                            <% if (video.category_name) { %>
+
+                                <span class="badge bg-danger">
+                                    <%= video.category_name %>
+                                </span>
+
+                            <% } %>
+
+                            <% if (video.description) { %>
+
+                                <p class="text-muted mt-2 mb-0">
+                                    <%= video.description %>
+                                </p>
+
+                            <% } %>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    <% } %>
+
+</div>

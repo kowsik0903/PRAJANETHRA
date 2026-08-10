@@ -1,0 +1,111 @@
+<%- include("../layouts/header") %>
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+
+        <h2 class="fw-bold">
+            🎥 Video News
+        </h2>
+
+        <p class="text-muted">
+            Latest news videos from PRAJANETHRA
+        </p>
+
+    </div>
+
+
+    <% if (videos.length === 0) { %>
+
+        <div class="text-center py-5">
+
+            <h4 class="text-muted">
+                No videos available.
+            </h4>
+
+        </div>
+
+    <% } else { %>
+
+        <div class="row g-4">
+
+            <% videos.forEach(video => { %>
+
+                <div class="col-lg-6 col-xl-4">
+
+                    <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+
+                        <div class="ratio ratio-16x9">
+
+                           <%
+    let videoId = "";
+
+    if (video.youtube_url.includes("watch?v=")) {
+        videoId = video.youtube_url.split("watch?v=")[1].split("&")[0];
+    } 
+    else if (video.youtube_url.includes("youtu.be/")) {
+        videoId = video.youtube_url.split("youtu.be/")[1].split("?")[0];
+    }
+%>
+
+<iframe
+    src="https://www.youtube.com/embed/<%= videoId %>"
+    title="<%= video.title %>"
+    frameborder="0"
+    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+    allowfullscreen>
+</iframe>
+
+                        </div>
+
+
+                        <div class="card-body">
+
+                            <h5 class="card-title fw-bold">
+                                <%= video.title %>
+                            </h5>
+
+
+                            <% if (video.category_name) { %>
+
+                                <span class="badge bg-danger mb-2">
+
+                                    <%= video.category_name %>
+
+                                </span>
+
+                            <% } %>
+
+
+                            <% if (video.description) { %>
+
+                                <p class="card-text text-muted">
+
+                                    <%= video.description %>
+
+                                </p>
+
+                            <% } %>
+
+
+                            <small class="text-muted">
+
+                                <%= new Date(video.created_at).toLocaleDateString() %>
+
+                            </small>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            <% }) %>
+
+        </div>
+
+    <% } %>
+
+</div>
+
+<%- include("../layouts/footer") %>

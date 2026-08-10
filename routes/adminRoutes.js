@@ -68,4 +68,43 @@ router.get("/categories/edit/:id", auth.isAdmin, adminController.editCategoryPag
 router.post("/categories/edit/:id", auth.isAdmin, adminController.updateCategory);
 
 router.get("/categories/delete/:id", auth.isAdmin, adminController.deleteCategory);
+// ================= VIDEO ROUTES =================
+
+router.get(
+    "/videos",
+    auth.isAdmin,
+    adminController.manageVideos
+);
+
+router.get(
+    "/videos/add",
+    auth.isAdmin,
+    adminController.addVideoPage
+);
+
+router.post(
+    "/videos/add",
+    auth.isAdmin,
+    adminController.saveVideo
+);
+
+router.get(
+    "/videos/edit/:id",
+    auth.isAdmin,
+    adminController.editVideoPage
+);
+
+router.post(
+    "/videos/edit/:id",
+    auth.isAdmin,
+    adminController.updateVideo
+);
+
+router.get(
+    "/videos/delete/:id",
+    auth.isAdmin,
+    adminController.deleteVideo
+);
+
 module.exports = router;
+

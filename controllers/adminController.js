@@ -15,46 +15,70 @@ exports.dashboard = (req, res) => {
 
     const dashboardData = {};
 
-    db.query("SELECT COUNT(*) AS totalNews FROM news", (err, newsResult) => {
-
-        if (err) return res.send(err);
-
-        dashboardData.totalNews = newsResult[0].totalNews;
-
-        db.query("SELECT COUNT(*) AS totalCategories FROM categories", (err, catResult) => {
+    db.query(
+        "SELECT COUNT(*) AS totalNews FROM news",
+        (err, newsResult) => {
 
             if (err) return res.send(err);
 
-            dashboardData.totalCategories = catResult[0].totalCategories;
+            dashboardData.totalNews = newsResult[0].totalNews;
 
-            db.query("SELECT COUNT(*) AS breakingNews FROM news WHERE is_breaking = 1", (err, breakResult) => {
+            db.query(
+                "SELECT COUNT(*) AS totalCategories FROM categories",
+                (err, catResult) => {
 
-                if (err) return res.send(err);
+                    if (err) return res.send(err);
 
-                dashboardData.breakingNews = breakResult[0].breakingNews;
+                    dashboardData.totalCategories =
+                        catResult[0].totalCategories;
 
-                db.query(
-    "SELECT COUNT(*) AS totalMessages FROM contacts",
-    (err, msgResult) => {
+                    db.query(
+                        "SELECT COUNT(*) AS breakingNews FROM news WHERE is_breaking = 1",
+                        (err, breakResult) => {
 
-        if (err) return res.send(err);
+                            if (err) return res.send(err);
 
-        dashboardData.totalMessages =
-            msgResult[0].totalMessages;
+                            dashboardData.breakingNews =
+                                breakResult[0].breakingNews;
 
-        res.render("admin/dashboard", {
-            admin: req.session.admin,
-            dashboardData
-        });
+                            db.query(
+                                "SELECT COUNT(*) AS totalMessages FROM contacts",
+                                (err, msgResult) => {
 
-    }
-);
+                                    if (err) return res.send(err);
 
-            });
+                                    dashboardData.totalMessages =
+                                        msgResult[0].totalMessages;
 
-        });
+                                    // Total Videos
+                                    db.query(
+                                        "SELECT COUNT(*) AS totalVideos FROM videos",
+                                        (err, videoResult) => {
 
-    });
+                                            if (err) return res.send(err);
+
+                                            dashboardData.totalVideos =
+                                                videoResult[0].totalVideos;
+
+                                            res.render("admin/dashboard", {
+                                                admin: req.session.admin,
+                                                dashboardData
+                                            });
+
+                                        }
+                                    );
+
+                                }
+                            );
+
+                        }
+                    );
+
+                }
+            );
+
+        }
+    );
 
 };
 
@@ -560,4 +584,203 @@ res.redirect("/admin/categories");
         }
     );
 
+};
+
+// ================= VIDEO MANAGEMENT =================
+
+// Add Video Page
+exports.addVideoPage = (req, res) => {
+
+    db.query(
+        "SELECT * FROM categories ORDER BY category_name ASC",
+        (err, categories) => {
+
+            if (err) {
+                return res.send(err);
+            }
+
+            res.render("admin/add-video", {
+                categories
+            });
+
+        }
+    );
+
+};
+
+
+// Save Video
+exports.saveVideo = (req, res) => {
+
+    const {
+        title,
+        description,
+        youtube_url,
+        category_id,
+        status
+    } = req.body;
+
+
+    const sql = `
+        INSERT INTO videos
+        (title, description, youtube_url, category_id, status)
+        VALUES (?, ?, ?, ?, ?)
+    `;
+
+
+    db.query(
+        sql,
+        [
+            title,
+            description,
+            youtube_url,
+            category_id,
+            status
+        ],
+        (err) => {
+
+            if (err) {
+                return res.send(err);
+            }
+
+            req.flash("success", "Video added successfully.");
+
+            res.redirect("/admin/videos");
+
+        }
+    );
+
+};
+
+// Manage Videos
+exports.manageVideos = (req, res) => {
+
+    const sql = `
+        SELECT videos.*, categories.category_name
+        FROM videos
+        LEFT JOIN categories
+        ON videos.category_id = categories.id
+        ORDER BY videos.created_at DESC
+    `;
+
+    db.query(sql, (err, videos) => {
+
+        if (err) {
+            return res.send(err);
+        }
+
+        res.render("admin/manage-videos", {
+            videos
+        });
+
+    });
+
+};
+
+exports.editVideoPage = (req, res) => {
+
+    const id = req.params.id;
+
+    const sql = `
+        SELECT *
+        FROM videos
+        WHERE id = ?
+    `;
+
+    db.query(sql, [id], (err, results) => {
+
+        if (err) {
+            console.error(err);
+            return res.status(500).send("Database Error");
+        }
+
+        if (results.length === 0) {
+            return res.status(404).send("Video Not Found");
+        }
+
+        db.query(
+            "SELECT * FROM categories ORDER BY category_name",
+            (err, categories) => {
+
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send("Database Error");
+                }
+
+                res.render("admin/edit-video", {
+                    video: results[0],
+                    categories
+                });
+
+            }
+        );
+
+    });
+};
+
+exports.updateVideo = (req, res) => {
+
+    const id = req.params.id;
+
+    const {
+        title,
+        description,
+        youtube_url,
+        category_id,
+        status
+    } = req.body;
+
+    const sql = `
+        UPDATE videos
+        SET
+            title = ?,
+            description = ?,
+            youtube_url = ?,
+            category_id = ?,
+            status = ?
+        WHERE id = ?
+    `;
+
+    db.query(
+        sql,
+        [
+            title,
+            description,
+            youtube_url,
+            category_id,
+            status,
+            id
+        ],
+        (err) => {
+
+            if (err) {
+                console.error(err);
+                return res.status(500).send("Database Error");
+            }
+
+            res.redirect("/admin/videos");
+
+        }
+    );
+};
+
+exports.deleteVideo = (req, res) => {
+
+    const id = req.params.id;
+
+    const sql = `
+        DELETE FROM videos
+        WHERE id = ?
+    `;
+
+    db.query(sql, [id], (err) => {
+
+        if (err) {
+            console.error("Error deleting video:", err);
+            return res.status(500).send("Database Error");
+        }
+
+        res.redirect("/admin/videos");
+
+    });
 };

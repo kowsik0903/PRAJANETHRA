@@ -8,6 +8,7 @@ exports.home = (req, res) => {
 
     const offset = (page - 1) * limit;
 
+
     // Total News Count
     const countSql = `
         SELECT COUNT(*) AS total
@@ -22,6 +23,7 @@ exports.home = (req, res) => {
         const totalNews = countResult[0].total;
 
         const totalPages = Math.ceil(totalNews / limit);
+
 
         // Get News with Pagination
         const newsSql = `
@@ -38,6 +40,7 @@ exports.home = (req, res) => {
 
             if (err) return res.send(err);
 
+
             // Breaking News
             const breakingSql = `
                 SELECT *
@@ -51,6 +54,7 @@ exports.home = (req, res) => {
 
                 if (err) return res.send(err);
 
+
                 // Categories
                 const categorySql = `
                     SELECT *
@@ -62,14 +66,56 @@ exports.home = (req, res) => {
 
                     if (err) return res.send(err);
 
-                    res.render("user/index", {
 
-                        news,
-                        breakingNews,
-                        categories,
+                    // Latest YouTube Videos
+                    const videoSql = `
+                        SELECT videos.*, categories.category_name
+                        FROM videos
+                        LEFT JOIN categories
+                        ON videos.category_id = categories.id
+                        WHERE videos.status='published'
+                        ORDER BY videos.created_at DESC
+                        LIMIT 3
+                    `;
 
-                        currentPage: page,
-                        totalPages
+                    db.query(videoSql, (err, videos) => {
+
+                        if (err) return res.send(err);
+
+
+                        const videoLimit = 3;
+const videoOffset = (page - 1) * videoLimit;
+
+const videoSql = `
+    SELECT videos.*, categories.category_name
+    FROM videos
+    LEFT JOIN categories
+    ON videos.category_id = categories.id
+    WHERE videos.status = 'published'
+    ORDER BY videos.created_at DESC
+    LIMIT ? OFFSET ?
+`;
+
+db.query(videoSql, [videoLimit, videoOffset], (err, videos) => {
+
+    if (err) {
+        console.error("Error fetching videos:", err);
+        return res.send(err);
+    }
+
+    res.render("user/index", {
+
+        news,
+        breakingNews,
+        categories,
+        videos,
+
+        currentPage: page,
+        totalPages
+
+    });
+
+});
 
                     });
 
@@ -207,5 +253,32 @@ exports.aboutPage = (req, res) => {
 
         }
     );
+
+};
+
+// Videos Page
+exports.videosPage = (req, res) => {
+
+    const sql = `
+        SELECT videos.*, categories.category_name
+        FROM videos
+        LEFT JOIN categories
+        ON videos.category_id = categories.id
+        WHERE videos.status = 'published'
+        ORDER BY videos.created_at DESC
+    `;
+
+    db.query(sql, (err, videos) => {
+
+        if (err) {
+            console.error("Error fetching videos:", err);
+            return res.status(500).send("Unable to load videos");
+        }
+
+        res.render("user/videos", {
+            videos
+        });
+
+    });
 
 };

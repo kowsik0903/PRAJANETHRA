@@ -1,0 +1,167 @@
+<%- include("../layouts/header") %>
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-10">
+
+        <div class="card shadow-lg border-0 rounded-4">
+
+            <div class="card-header bg-danger text-white py-3">
+
+                <h3 class="mb-0">
+                    🎥 Add YouTube Video
+                </h3>
+
+            </div>
+
+            <div class="card-body p-4">
+
+                <form action="/admin/videos/add" method="POST">
+
+                    <!-- Video Title -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-bold">
+                            Video Title
+                        </label>
+
+                        <input
+                            type="text"
+                            name="title"
+                            class="form-control form-control-lg"
+                            placeholder="Enter Video Title"
+                            required>
+
+                    </div>
+
+
+                    <!-- Category -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-bold">
+                            Category
+                        </label>
+
+                        <select
+                            name="category_id"
+                            class="form-select form-select-lg"
+                            required>
+
+                            <option value="">
+                                Select Category
+                            </option>
+
+                            <% categories.forEach(category => { %>
+
+                                <option value="<%= category.id %>">
+
+                                    <%= category.category_name %>
+
+                                </option>
+
+                            <% }) %>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Description -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-bold">
+                            Video Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            rows="5"
+                            class="form-control"
+                            placeholder="Enter Video Description"></textarea>
+
+                    </div>
+
+
+                    <!-- YouTube URL -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-bold">
+                            YouTube Video URL
+                        </label>
+
+                        <input
+                            type="url"
+                            name="youtube_url"
+                            class="form-control form-control-lg"
+                            placeholder="https://www.youtube.com/watch?v=..."
+                            required>
+
+                        <div class="form-text">
+                            Paste the YouTube video URL here.
+                        </div>
+
+                    </div>
+
+
+                    <!-- Status -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-bold">
+                            Status
+                        </label>
+
+                        <select
+                            name="status"
+                            class="form-select form-select-lg">
+
+                            <option value="published">
+                                Published
+                            </option>
+
+                            <option value="draft">
+                                Draft
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <!-- Buttons -->
+
+                    <div class="d-flex gap-3">
+
+                        <button
+                            type="submit"
+                            class="btn btn-success btn-lg px-4">
+
+                            🎥 Publish Video
+
+                        </button>
+
+                        <a
+                            href="/admin/dashboard"
+                            class="btn btn-secondary btn-lg px-4">
+
+                            Cancel
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>

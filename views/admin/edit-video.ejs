@@ -1,0 +1,179 @@
+<%- include("../layouts/header") %>
+
+<div class="row justify-content-center">
+
+    <div class="col-lg-10">
+
+        <div class="card shadow-lg border-0 rounded-4">
+
+            <div class="card-header bg-danger text-white py-3">
+
+                <h3 class="mb-0">
+                    🎥 Edit Video
+                </h3>
+
+            </div>
+
+            <div class="card-body p-4">
+
+                <form
+                    action="/admin/videos/edit/<%= video.id %>"
+                    method="POST">
+
+                    <!-- Title -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-bold">
+                            Video Title
+                        </label>
+
+                        <input
+                            type="text"
+                            name="title"
+                            class="form-control form-control-lg"
+                            value="<%= video.title %>"
+                            required>
+
+                    </div>
+
+
+                    <!-- Category & Status -->
+
+                    <div class="row">
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label fw-bold">
+                                Category
+                            </label>
+
+                            <select
+                                name="category_id"
+                                class="form-select form-select-lg">
+
+                                <option value="">
+                                    No Category
+                                </option>
+
+                                <% categories.forEach(category => { %>
+
+                                    <option
+                                        value="<%= category.id %>"
+                                        <%= String(video.category_id) === String(category.id) ? "selected" : "" %>>
+
+                                        <%= category.category_name %>
+
+                                    </option>
+
+                                <% }) %>
+
+                            </select>
+
+                        </div>
+
+
+                        <div class="col-md-6 mb-4">
+
+                            <label class="form-label fw-bold">
+                                Status
+                            </label>
+
+                            <select
+                                name="status"
+                                class="form-select form-select-lg">
+
+                                <option
+                                    value="published"
+                                    <%= video.status === "published" ? "selected" : "" %>>
+
+                                    Published
+
+                                </option>
+
+                                <option
+                                    value="draft"
+                                    <%= video.status === "draft" ? "selected" : "" %>>
+
+                                    Draft
+
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Description -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-bold">
+                            Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            rows="5"
+                            class="form-control"><%= video.description || "" %></textarea>
+
+                    </div>
+
+
+                    <!-- YouTube URL -->
+
+                    <div class="mb-4">
+
+                        <label class="form-label fw-bold">
+                            YouTube URL
+                        </label>
+
+                        <input
+                            type="url"
+                            name="youtube_url"
+                            class="form-control"
+                            value="<%= video.youtube_url %>"
+                            required>
+
+                        <small class="text-muted">
+                            Example: https://www.youtube.com/watch?v=XXXXXXXXXXX
+                        </small>
+
+                    </div>
+
+
+                    <!-- Buttons -->
+
+                    <div class="d-flex gap-3">
+
+                        <button
+                            type="submit"
+                            class="btn btn-success btn-lg px-4">
+
+                            💾 Update Video
+
+                        </button>
+
+                        <a
+                            href="/admin/videos"
+                            class="btn btn-secondary btn-lg px-4">
+
+                            Cancel
+
+                        </a>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<%- include("../layouts/footer") %>

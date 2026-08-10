@@ -1,0 +1,55 @@
+<% if (totalPages > 1) { %>
+
+<div class="container my-5">
+
+    <nav aria-label="News pagination">
+
+        <ul class="pagination justify-content-center">
+
+            <!-- Previous -->
+            <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+
+                <a class="page-link"
+                   href="/?page=<%= currentPage - 1 %>">
+                    Previous
+                </a>
+
+            </li>
+
+
+            <!-- Page Numbers -->
+            <% for (let i = 1; i <= totalPages; i++) { %>
+
+                <li class="page-item <%= currentPage === i ? 'active' : '' %>">
+
+                    <a class="page-link"
+                       href="/?page=<%= i %>">
+
+                        <%= i %>
+
+                    </a>
+
+                </li>
+
+            <% } %>
+
+
+            <!-- Next -->
+            <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+
+                <a class="page-link"
+                   href="/?page=<%= currentPage + 1 %>">
+
+                    Next
+
+                </a>
+
+            </li>
+
+        </ul>
+
+    </nav>
+
+</div>
+
+<% } %>
