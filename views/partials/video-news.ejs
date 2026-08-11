@@ -2,76 +2,86 @@
 
 <div class="container my-5">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+```
+<div class="d-flex justify-content-between align-items-center mb-4">
 
-        <div>
-            <h2 class="fw-bold mb-1">
-                🎥 Video News
-            </h2>
+    <div>
+        <h2 class="fw-bold mb-1">
+            🎥 Video News
+        </h2>
 
-            <p class="text-muted mb-0">
-                Latest news videos from PRAJANETHRA
-            </p>
-        </div>
-
-        <a href="/videos" class="btn btn-danger">
-            View All Videos
-        </a>
-
+        <p class="text-muted mb-0">
+            Latest news videos from PRAJANETHRA
+        </p>
     </div>
 
+    <a href="/videos" class="btn btn-danger">
+        View All Videos
+    </a>
 
-    <% if (videos && videos.length > 0) { %>
-
-        <div class="row g-4">
-
-            <% videos.forEach(video => { %>
-
-                <div class="col-lg-4 col-md-6">
-
-                    <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-
-                        <div class="ratio ratio-16x9">
-
-                            <% if (video.video_type === "upload" && video.video_url) { %>
-
-                                <!-- Uploaded Cloudinary Video -->
-
-                                <video
-                                    controls
-                                    preload="metadata"
-                                    style="width: 100%; height: 100%; object-fit: cover;">
-
-                                    <source
-                                        src="<%= video.video_url %>"
-                                        type="video/mp4">
-
-                                    Your browser does not support the video player.
-
-                                </video>
+</div>
 
 
-                            <% } else if (video.youtube_url) { %>
+<% if (videos && videos.length > 0) { %>
 
-                                <!-- YouTube Video -->
+    <div class="row g-4">
 
-                                <%
-                                    let videoId = "";
+        <% videos.forEach(video => { %>
 
-                                    if (video.youtube_url.includes("watch?v=")) {
+            <div class="col-lg-4 col-md-6">
 
-                                        videoId = video.youtube_url
-                                            .split("watch?v=")[1]
-                                            .split("&")[0];
+                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
 
-                                    } else if (video.youtube_url.includes("youtu.be/")) {
+                    <div class="ratio ratio-16x9">
 
-                                        videoId = video.youtube_url
-                                            .split("youtu.be/")[1]
-                                            .split("?")[0];
+                        <% if (video.video_type === "upload" && video.video_url) { %>
 
-                                    }
-                                %>
+                            <!-- Uploaded Cloudinary Video -->
+
+                            <video
+                                controls
+                                preload="metadata"
+                                style="width: 100%; height: 100%; object-fit: cover;">
+
+                                <source
+                                    src="<%= video.video_url %>"
+                                    type="video/mp4">
+
+                                Your browser does not support the video player.
+
+                            </video>
+
+
+                        <% } else if (video.youtube_url) { %>
+
+                            <!-- YouTube Video -->
+
+                            <%
+                                let videoId = "";
+                                const youtubeUrl = video.youtube_url || "";
+
+                                if (youtubeUrl.includes("watch?v=")) {
+
+                                    videoId = youtubeUrl
+                                        .split("watch?v=")[1]
+                                        .split("&")[0];
+
+                                } else if (youtubeUrl.includes("youtu.be/")) {
+
+                                    videoId = youtubeUrl
+                                        .split("youtu.be/")[1]
+                                        .split("?")[0];
+
+                                } else if (youtubeUrl.includes("/embed/")) {
+
+                                    videoId = youtubeUrl
+                                        .split("/embed/")[1]
+                                        .split("?")[0];
+
+                                }
+                            %>
+
+                            <% if (videoId) { %>
 
                                 <iframe
                                     src="https://www.youtube.com/embed/<%= videoId %>"
@@ -81,61 +91,80 @@
                                     allowfullscreen>
                                 </iframe>
 
+                            <% } else { %>
+
+                                <div class="d-flex align-items-center justify-content-center bg-light h-100">
+                                    <span class="text-muted">
+                                        Video unavailable
+                                    </span>
+                                </div>
+
                             <% } %>
 
-                        </div>
 
+                        <% } else { %>
 
-                        <div class="card-body">
-
-                            <h5 class="fw-bold">
-                                <%= video.title %>
-                            </h5>
-
-
-                            <% if (video.category_name) { %>
-
-                                <span class="badge bg-danger">
-                                    <%= video.category_name %>
+                            <div class="d-flex align-items-center justify-content-center bg-light h-100">
+                                <span class="text-muted">
+                                    Video unavailable
                                 </span>
+                            </div>
 
-                            <% } %>
+                        <% } %>
 
-
-                            <% if (video.description) { %>
-
-                                <p class="text-muted mt-2 mb-0">
-                                    <%= video.description %>
-                                </p>
-
-                            <% } %>
+                    </div>
 
 
-                            <button
-                                type="button"
-                                class="btn btn-outline-primary btn-sm share-video-btn"
-                                data-video-id="<%= video.id %>"
-                                data-video-title="<%= video.title %>">
+                    <div class="card-body">
 
-                                <i class="bi bi-share"></i>
-                                Share
+                        <h5 class="fw-bold">
+                            <%= video.title %>
+                        </h5>
 
-                            </button>
 
-                        </div>
+                        <% if (video.category_name) { %>
+
+                            <span class="badge bg-danger">
+                                <%= video.category_name %>
+                            </span>
+
+                        <% } %>
+
+
+                        <% if (video.description) { %>
+
+                            <p class="text-muted mt-2 mb-0">
+                                <%= video.description %>
+                            </p>
+
+                        <% } %>
+
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary btn-sm share-video-btn"
+                            data-video-id="<%= video.id %>"
+                            data-video-title="<%= video.title %>">
+
+                            <i class="bi bi-share"></i>
+                            Share
+
+                        </button>
 
                     </div>
 
                 </div>
 
-            <% }) %>
+            </div>
 
-        </div>
+        <% }) %>
 
-    <% } %>
+    </div>
+
+<% } %>
+```
 
 </div>
-
 
 <script>
 
