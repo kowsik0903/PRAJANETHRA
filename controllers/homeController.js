@@ -282,3 +282,50 @@ exports.videosPage = (req, res) => {
     });
 
 };
+
+exports.videoDetails = (req, res) => {
+
+    const id = req.params.id;
+
+    const sql = `
+        SELECT videos.*, categories.category_name
+        FROM videos
+        LEFT JOIN categories
+        ON videos.category_id = categories.id
+        WHERE videos.id = ?
+        AND videos.status = 'published'
+    `;
+
+    db.query(sql, [id], (err, result) => {
+
+        if (err) {
+            console.error("Error fetching video:", err);
+            return res.status(500).send("Unable to load video");
+        }
+
+        if (result.length === 0) {
+            return res.status(404).send("Video Not Found");
+        }
+
+        const video = result[0];
+
+        db.query(
+            "SELECT * FROM categories ORDER BY category_name",
+            (err, categories) => {
+
+                if (err) {
+                    console.error(err);
+                    return res.status(500).send("Database Error");
+                }
+
+                res.render("user/video-details", {
+                    video,
+                    categories
+                });
+
+            }
+        );
+
+    });
+
+};
