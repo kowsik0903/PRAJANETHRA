@@ -7,21 +7,20 @@
         <div class="card shadow-lg border-0 rounded-4">
 
             <div class="card-header bg-danger text-white py-3">
-
                 <h3 class="mb-0">
-                    🎥 Add YouTube Video
+                    🎥 Add Video
                 </h3>
-
             </div>
 
             <div class="card-body p-4">
 
-                <form action="/admin/videos/add" method="POST">
+                <form
+                    action="/admin/videos/add"
+                    method="POST"
+                    enctype="multipart/form-data">
 
                     <!-- Video Title -->
-
                     <div class="mb-4">
-
                         <label class="form-label fw-bold">
                             Video Title
                         </label>
@@ -32,14 +31,11 @@
                             class="form-control form-control-lg"
                             placeholder="Enter Video Title"
                             required>
-
                     </div>
 
 
                     <!-- Category -->
-
                     <div class="mb-4">
-
                         <label class="form-label fw-bold">
                             Category
                         </label>
@@ -56,22 +52,17 @@
                             <% categories.forEach(category => { %>
 
                                 <option value="<%= category.id %>">
-
                                     <%= category.category_name %>
-
                                 </option>
 
                             <% }) %>
 
                         </select>
-
                     </div>
 
 
                     <!-- Description -->
-
                     <div class="mb-4">
-
                         <label class="form-label fw-bold">
                             Video Description
                         </label>
@@ -81,13 +72,65 @@
                             rows="5"
                             class="form-control"
                             placeholder="Enter Video Description"></textarea>
+                    </div>
+
+
+                    <!-- Video Source -->
+                    <div class="mb-4">
+
+                        <label class="form-label fw-bold">
+                            Video Source
+                        </label>
+
+                        <div class="d-flex gap-4">
+
+                            <div class="form-check">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="video_source"
+                                    id="youtubeSource"
+                                    value="youtube"
+                                    checked>
+
+                                <label
+                                    class="form-check-label"
+                                    for="youtubeSource">
+
+                                    YouTube URL
+
+                                </label>
+                            </div>
+
+
+                            <div class="form-check">
+
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="video_source"
+                                    id="uploadSource"
+                                    value="upload">
+
+                                <label
+                                    class="form-check-label"
+                                    for="uploadSource">
+
+                                    Upload Video
+
+                                </label>
+
+                            </div>
+
+                        </div>
 
                     </div>
 
 
                     <!-- YouTube URL -->
-
-                    <div class="mb-4">
+                    <div
+                        class="mb-4"
+                        id="youtubeSection">
 
                         <label class="form-label fw-bold">
                             YouTube Video URL
@@ -96,9 +139,9 @@
                         <input
                             type="url"
                             name="youtube_url"
+                            id="youtubeUrl"
                             class="form-control form-control-lg"
-                            placeholder="https://www.youtube.com/watch?v=..."
-                            required>
+                            placeholder="https://www.youtube.com/watch?v=...">
 
                         <div class="form-text">
                             Paste the YouTube video URL here.
@@ -107,8 +150,31 @@
                     </div>
 
 
-                    <!-- Status -->
+                    <!-- Upload Video -->
+                    <div
+                        class="mb-4"
+                        id="uploadSection"
+                        style="display: none;">
 
+                        <label class="form-label fw-bold">
+                            Upload Video
+                        </label>
+
+                        <input
+                            type="file"
+                            name="video"
+                            id="videoFile"
+                            class="form-control form-control-lg"
+                            accept="video/*">
+
+                        <div class="form-text">
+                            Select a video file from your computer or mobile.
+                        </div>
+
+                    </div>
+
+
+                    <!-- Status -->
                     <div class="mb-4">
 
                         <label class="form-label fw-bold">
@@ -133,7 +199,6 @@
 
 
                     <!-- Buttons -->
-
                     <div class="d-flex gap-3">
 
                         <button
@@ -163,5 +228,61 @@
     </div>
 
 </div>
+
+
+<!-- Video Source Toggle -->
+<script>
+
+    const youtubeSource = document.getElementById("youtubeSource");
+    const uploadSource = document.getElementById("uploadSource");
+
+    const youtubeSection = document.getElementById("youtubeSection");
+    const uploadSection = document.getElementById("uploadSection");
+
+    const youtubeUrl = document.getElementById("youtubeUrl");
+    const videoFile = document.getElementById("videoFile");
+
+
+    function updateVideoSource() {
+
+        if (youtubeSource.checked) {
+
+            // Show YouTube
+            youtubeSection.style.display = "block";
+            uploadSection.style.display = "none";
+
+            // YouTube required
+            youtubeUrl.required = true;
+
+            // File not required
+            videoFile.required = false;
+
+            // Clear uploaded file
+            videoFile.value = "";
+
+        } else {
+
+            // Show Upload
+            youtubeSection.style.display = "none";
+            uploadSection.style.display = "block";
+
+            // File required
+            videoFile.required = true;
+
+            // YouTube not required
+            youtubeUrl.required = false;
+
+            // Clear YouTube URL
+            youtubeUrl.value = "";
+        }
+    }
+
+
+    youtubeSource.addEventListener("change", updateVideoSource);
+
+    uploadSource.addEventListener("change", updateVideoSource);
+
+</script>
+
 
 <%- include("../layouts/footer") %>

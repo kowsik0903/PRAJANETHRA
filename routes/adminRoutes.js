@@ -3,8 +3,10 @@ const express = require("express");
 const router = express.Router();
 
 const upload = require("../middleware/upload");
+const uploadVideo = require("../middleware/videoUpload");
 const auth = require("../middleware/auth");
 const adminController = require("../controllers/adminController");
+const videoController = require("../controllers/videoController");
   
 
 router.get("/login", adminController.loginPage);
@@ -79,13 +81,14 @@ router.get(
 router.get(
     "/videos/add",
     auth.isAdmin,
-    adminController.addVideoPage
+    videoController.addVideoPage
 );
 
 router.post(
     "/videos/add",
     auth.isAdmin,
-    adminController.saveVideo
+    uploadVideo.single("video"),
+    videoController.addVideo
 );
 
 router.get(
@@ -97,6 +100,7 @@ router.get(
 router.post(
     "/videos/edit/:id",
     auth.isAdmin,
+    uploadVideo.single("video"),
     adminController.updateVideo
 );
 

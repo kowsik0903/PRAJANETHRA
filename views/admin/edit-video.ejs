@@ -14,11 +14,14 @@
 
             </div>
 
+
             <div class="card-body p-4">
 
                 <form
                     action="/admin/videos/edit/<%= video.id %>"
-                    method="POST">
+                    method="POST"
+                    enctype="multipart/form-data">
+
 
                     <!-- Title -->
 
@@ -122,24 +125,121 @@
                     </div>
 
 
-                    <!-- YouTube URL -->
+                    <!-- Video Type -->
 
                     <div class="mb-4">
 
                         <label class="form-label fw-bold">
-                            YouTube URL
+                            Video Source
+                        </label>
+
+                        <div class="d-flex gap-4">
+
+                            <div class="form-check">
+
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="video_source"
+                                    id="youtubeSource"
+                                    value="youtube"
+                                    <%= video.video_type !== "upload" ? "checked" : "" %>>
+
+                                <label
+                                    class="form-check-label"
+                                    for="youtubeSource">
+
+                                    ▶️ YouTube URL
+
+                                </label>
+
+                            </div>
+
+
+                            <div class="form-check">
+
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="video_source"
+                                    id="uploadSource"
+                                    value="upload"
+                                    <%= video.video_type === "upload" ? "checked" : "" %>>
+
+                                <label
+                                    class="form-check-label"
+                                    for="uploadSource">
+
+                                    📹 Upload Video
+
+                                </label>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- YouTube -->
+
+                    <div
+                        class="mb-4"
+                        id="youtubeSection">
+
+                        <label class="form-label fw-bold">
+                            YouTube Video URL
                         </label>
 
                         <input
                             type="url"
                             name="youtube_url"
-                            class="form-control"
-                            value="<%= video.youtube_url %>"
-                            required>
+                            id="youtubeUrl"
+                            class="form-control form-control-lg"
+                            value="<%= video.youtube_url || "" %>"
+                            placeholder="https://www.youtube.com/watch?v=...">
 
-                        <small class="text-muted">
-                            Example: https://www.youtube.com/watch?v=XXXXXXXXXXX
-                        </small>
+                        <div class="form-text">
+                            Paste the YouTube video URL here.
+                        </div>
+
+                    </div>
+
+
+                    <!-- Upload -->
+
+                    <div
+                        class="mb-4"
+                        id="uploadSection">
+
+                        <label class="form-label fw-bold">
+                            Upload New Video
+                        </label>
+
+                        <input
+                            type="file"
+                            name="video"
+                            id="videoFile"
+                            class="form-control form-control-lg"
+                            accept="video/*">
+
+                        <div class="form-text">
+                            Select a new video only if you want to replace the current uploaded video.
+                        </div>
+
+                        <% if (video.video_type === "upload" && video.video_url) { %>
+
+                            <div class="alert alert-info mt-3">
+
+                                📹 Current uploaded video exists.
+
+                                <br>
+
+                                Choose a new file above to replace it.
+
+                            </div>
+
+                        <% } %>
 
                     </div>
 
@@ -155,6 +255,7 @@
                             💾 Update Video
 
                         </button>
+
 
                         <a
                             href="/admin/videos"
@@ -175,5 +276,71 @@
     </div>
 
 </div>
+
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const youtubeSource =
+        document.getElementById("youtubeSource");
+
+    const uploadSource =
+        document.getElementById("uploadSource");
+
+    const youtubeSection =
+        document.getElementById("youtubeSection");
+
+    const uploadSection =
+        document.getElementById("uploadSection");
+
+    const youtubeUrl =
+        document.getElementById("youtubeUrl");
+
+    const videoFile =
+        document.getElementById("videoFile");
+
+
+    function updateVideoSource() {
+
+        if (youtubeSource.checked) {
+
+            youtubeSection.style.display = "block";
+            uploadSection.style.display = "none";
+
+            youtubeUrl.required = true;
+            videoFile.required = false;
+
+        } else {
+
+            youtubeSection.style.display = "none";
+            uploadSection.style.display = "block";
+
+            youtubeUrl.required = false;
+            videoFile.required = false;
+
+        }
+
+    }
+
+
+    youtubeSource.addEventListener(
+        "change",
+        updateVideoSource
+    );
+
+
+    uploadSource.addEventListener(
+        "change",
+        updateVideoSource
+    );
+
+
+    updateVideoSource();
+
+});
+
+</script>
+
 
 <%- include("../layouts/footer") %>

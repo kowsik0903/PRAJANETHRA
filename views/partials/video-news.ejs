@@ -33,31 +33,55 @@
 
                         <div class="ratio ratio-16x9">
 
-                            <%
-                                let videoId = "";
+                            <% if (video.video_type === "upload" && video.video_url) { %>
 
-                                if (video.youtube_url.includes("watch?v=")) {
+                                <!-- Uploaded Cloudinary Video -->
 
-                                    videoId = video.youtube_url
-                                        .split("watch?v=")[1]
-                                        .split("&")[0];
+                                <video
+                                    controls
+                                    preload="metadata"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
 
-                                } else if (video.youtube_url.includes("youtu.be/")) {
+                                    <source
+                                        src="<%= video.video_url %>"
+                                        type="video/mp4">
 
-                                    videoId = video.youtube_url
-                                        .split("youtu.be/")[1]
-                                        .split("?")[0];
+                                    Your browser does not support the video player.
 
-                                }
-                            %>
+                                </video>
 
-                            <iframe
-                                src="https://www.youtube.com/embed/<%= videoId %>"
-                                title="<%= video.title %>"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                allowfullscreen>
-                            </iframe>
+
+                            <% } else if (video.youtube_url) { %>
+
+                                <!-- YouTube Video -->
+
+                                <%
+                                    let videoId = "";
+
+                                    if (video.youtube_url.includes("watch?v=")) {
+
+                                        videoId = video.youtube_url
+                                            .split("watch?v=")[1]
+                                            .split("&")[0];
+
+                                    } else if (video.youtube_url.includes("youtu.be/")) {
+
+                                        videoId = video.youtube_url
+                                            .split("youtu.be/")[1]
+                                            .split("?")[0];
+
+                                    }
+                                %>
+
+                                <iframe
+                                    src="https://www.youtube.com/embed/<%= videoId %>"
+                                    title="<%= video.title %>"
+                                    frameborder="0"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen>
+                                </iframe>
+
+                            <% } %>
 
                         </div>
 
@@ -68,6 +92,7 @@
                                 <%= video.title %>
                             </h5>
 
+
                             <% if (video.category_name) { %>
 
                                 <span class="badge bg-danger">
@@ -76,6 +101,7 @@
 
                             <% } %>
 
+
                             <% if (video.description) { %>
 
                                 <p class="text-muted mt-2 mb-0">
@@ -83,17 +109,18 @@
                                 </p>
 
                             <% } %>
+
+
                             <button
-    type="button"
-    class="btn btn-outline-primary btn-sm share-video-btn"
-    data-video-id="<%= video.id %>"
-    data-video-title="<%= video.title %>">
+                                type="button"
+                                class="btn btn-outline-primary btn-sm share-video-btn"
+                                data-video-id="<%= video.id %>"
+                                data-video-title="<%= video.title %>">
 
-    <i class="bi bi-share"></i>
-    Share
+                                <i class="bi bi-share"></i>
+                                Share
 
-</button>
-                        
+                            </button>
 
                         </div>
 
@@ -109,10 +136,14 @@
 
 </div>
 
+
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
-    const shareButtons = document.querySelectorAll(".share-video-btn");
+    const shareButtons =
+        document.querySelectorAll(".share-video-btn");
+
 
     shareButtons.forEach(function (button) {
 
@@ -121,7 +152,12 @@ document.addEventListener("DOMContentLoaded", function () {
             const videoId = this.dataset.videoId;
             const title = this.dataset.videoTitle;
 
-            const url = window.location.origin + "/video/" + videoId;
+
+            const url =
+                window.location.origin +
+                "/video/" +
+                videoId;
+
 
             if (navigator.share) {
 
@@ -160,4 +196,5 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 });
+
 </script>

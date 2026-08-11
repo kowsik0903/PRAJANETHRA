@@ -718,69 +718,513 @@ exports.editVideoPage = (req, res) => {
     });
 };
 
-exports.updateVideo = (req, res) => {
+exports.updateVideo = async (req, res) => {
 
     const id = req.params.id;
 
     const {
         title,
         description,
-        youtube_url,
         category_id,
-        status
+        status,
+        video_source,
+        youtube_url
     } = req.body;
 
-    const sql = `
-        UPDATE videos
-        SET
-            title = ?,
-            description = ?,
-            youtube_url = ?,
-            category_id = ?,
-            status = ?
-        WHERE id = ?
-    `;
 
-    db.query(
-        sql,
-        [
-            title,
-            description,
-            youtube_url,
-            category_id,
-            status,
-            id
-        ],
-        (err) => {
+    try {
 
-            if (err) {
-                console.error(err);
-                return res.status(500).send("Database Error");
+        // Get existing video
+        db.query(
+            `
+            SELECT *
+            FROM videos
+            WHERE id = ?
+            `,
+            [id],
+            async (err, results) => {
+
+                if (err) {
+                    console.error("Error finding video:", err);
+                    return res.status(500).send("Database Error");
+                }
+
+
+                if (results.length === 0) {
+                    return res.status(404).send("Video Not Found");
+                }
+
+
+                const oldVideo = results[0];
+
+
+                // ==========================================
+                // YOUTUBE VIDEO
+                // ==========================================
+
+                if (video_source === "youtube") {
+
+                    // If old video was uploaded,
+                    // delete it from Cloudinary first.
+
+                    if (
+                        oldVideo.video_type === "upload" &&
+                        oldVideo.video_url
+                    ) {
+
+                        try {
+
+                            const url = oldVideo.video_url;
+
+                            const uploadIndex =
+                                url.indexOf("/upload/");
+
+
+                            if (uploadIndex !== -1) {
+
+                                let publicId =
+                                    url.substring(
+                                        uploadIndex +
+                                        "/upload/".length
+                                    );
+
+
+                                publicId =
+                                    publicId.replace(
+                                        /^v\d+\//,
+                                        ""
+                                    );
+
+
+                                publicId =
+                                    publicId.replace(
+                                        /\.[^/.]+$/,
+                                        ""
+                                    );
+
+
+                                console.log(
+                                    "☁️ Deleting old Cloudinary video:",
+                                    publicId
+                                );
+
+
+                                await cloudinary.uploader.destroy(
+                                    publicId,
+                                    {
+                                        resource_type: "video"
+                                    }
+                                );
+
+
+                                console.log(
+                                    "✅ Old Cloudinary video deleted"
+                                );
+
+                            }
+
+                        } catch (cloudinaryError) {
+
+                            console.error(
+                                "Cloudinary delete error:",
+                                cloudinaryError
+                            );
+
+                            return res.status(500).send(
+                                "Failed to delete old video from Cloudinary"
+                            );
+
+                        }
+
+                    }
+
+
+                    // Update as YouTube
+
+                    const sql = `
+                        UPDATE videos
+                        SET
+                            title = ?,
+                            description = ?,
+                            youtube_url = ?,
+                            video_url = NULL,
+                            video_type = 'youtube',
+                            category_id = ?,
+                            status = ?
+                        WHERE id = ?
+                    `;
+
+
+                    db.query(
+                        sql,
+                        [
+                            title,
+                            description,
+                            youtube_url,
+                            category_id || null,
+                            status,
+                            id
+                        ],
+                        (updateErr) => {
+
+                            if (updateErr) {
+
+                                console.error(
+                                    "Error updating video:",
+                                    updateErr
+                                );
+
+                                return res.status(500).send(
+                                    "Database Error"
+                                );
+
+                            }
+
+
+                            res.redirect("/admin/videos");
+
+                        }
+                    );
+
+                    return;
+                }
+
+
+                // ==========================================
+                // UPLOADED VIDEO
+                // ==========================================
+
+                if (video_source === "upload") {
+
+                    let videoUrl = oldVideo.video_url;
+
+
+                    // If a new file was selected
+                    if (req.file) {
+
+                        console.log(
+                            "📹 New video received:",
+                            req.file.originalname
+                        );
+
+
+                        try {
+
+                            // Upload new video to Cloudinary
+
+                            const result =
+                                await cloudinary.uploader.upload(
+                                    req.file.path,
+                                    {
+                                        resource_type: "video",
+                                        folder: "prajanethra/videos"
+                                    }
+                                );
+
+
+                            videoUrl = result.secure_url;
+
+
+                            console.log(
+                                "☁️ New video uploaded:",
+                                videoUrl
+                            );
+
+
+                            // Delete old Cloudinary video
+
+                            if (
+                                oldVideo.video_type === "upload" &&
+                                oldVideo.video_url
+                            ) {
+
+                                try {
+
+                                    const oldUrl =
+                                        oldVideo.video_url;
+
+                                    const uploadIndex =
+                                        oldUrl.indexOf("/upload/");
+
+
+                                    if (uploadIndex !== -1) {
+
+                                        let publicId =
+                                            oldUrl.substring(
+                                                uploadIndex +
+                                                "/upload/".length
+                                            );
+
+
+                                        publicId =
+                                            publicId.replace(
+                                                /^v\d+\//,
+                                                ""
+                                            );
+
+
+                                        publicId =
+                                            publicId.replace(
+                                                /\.[^/.]+$/,
+                                                ""
+                                            );
+
+
+                                        await cloudinary.uploader.destroy(
+                                            publicId,
+                                            {
+                                                resource_type: "video"
+                                            }
+                                        );
+
+
+                                        console.log(
+                                            "🗑️ Old Cloudinary video deleted"
+                                        );
+
+                                    }
+
+                                } catch (deleteError) {
+
+                                    console.error(
+                                        "Old Cloudinary delete error:",
+                                        deleteError
+                                    );
+
+                                }
+
+                            }
+
+                        } catch (uploadError) {
+
+                            console.error(
+                                "Cloudinary upload error:",
+                                uploadError
+                            );
+
+                            return res.status(500).send(
+                                "Failed to upload video"
+                            );
+
+                        }
+
+                    }
+
+
+                    // Make sure an uploaded video exists
+
+                    if (!videoUrl) {
+
+                        return res.status(400).send(
+                            "Please select a video file."
+                        );
+
+                    }
+
+
+                    // Update database
+
+                    const sql = `
+                        UPDATE videos
+                        SET
+                            title = ?,
+                            description = ?,
+                            youtube_url = NULL,
+                            video_url = ?,
+                            video_type = 'upload',
+                            category_id = ?,
+                            status = ?
+                        WHERE id = ?
+                    `;
+
+
+                    db.query(
+                        sql,
+                        [
+                            title,
+                            description,
+                            videoUrl,
+                            category_id || null,
+                            status,
+                            id
+                        ],
+                        (updateErr) => {
+
+                            if (updateErr) {
+
+                                console.error(
+                                    "Error updating video:",
+                                    updateErr
+                                );
+
+                                return res.status(500).send(
+                                    "Database Error"
+                                );
+
+                            }
+
+
+                            res.redirect("/admin/videos");
+
+                        }
+                    );
+
+                }
+
             }
+        );
 
-            res.redirect("/admin/videos");
+    } catch (error) {
 
-        }
-    );
+        console.error(
+            "Update video error:",
+            error
+        );
+
+        res.status(500).send(
+            "Failed to update video"
+        );
+
+    }
+
 };
 
-exports.deleteVideo = (req, res) => {
+exports.deleteVideo = async (req, res) => {
 
     const id = req.params.id;
 
-    const sql = `
-        DELETE FROM videos
-        WHERE id = ?
-    `;
+    try {
 
-    db.query(sql, [id], (err) => {
+        // Get video information first
+        db.query(
+            `
+            SELECT video_url, video_type
+            FROM videos
+            WHERE id = ?
+            `,
+            [id],
+            async (err, results) => {
 
-        if (err) {
-            console.error("Error deleting video:", err);
-            return res.status(500).send("Database Error");
-        }
+                if (err) {
+                    console.error("Error finding video:", err);
+                    return res.status(500).send("Database Error");
+                }
 
-        res.redirect("/admin/videos");
+                if (results.length === 0) {
+                    return res.status(404).send("Video not found");
+                }
 
-    });
+                const video = results[0];
+
+
+                // ==========================================
+                // Delete uploaded video from Cloudinary
+                // ==========================================
+
+                if (video.video_type === "upload" && video.video_url) {
+
+                    try {
+
+                        const url = video.video_url;
+
+                        const uploadIndex = url.indexOf("/upload/");
+
+                        if (uploadIndex !== -1) {
+
+                            let publicId = url.substring(
+                                uploadIndex + "/upload/".length
+                            );
+
+                            // Remove version
+                            publicId = publicId.replace(
+                                /^v\d+\//,
+                                ""
+                            );
+
+                            // Remove extension
+                            publicId = publicId.replace(
+                                /\.[^/.]+$/,
+                                ""
+                            );
+
+                            console.log(
+                                "☁️ Deleting Cloudinary video:",
+                                publicId
+                            );
+
+                            await cloudinary.uploader.destroy(
+                                publicId,
+                                {
+                                    resource_type: "video"
+                                }
+                            );
+
+                            console.log(
+                                "✅ Cloudinary video deleted"
+                            );
+                        }
+
+                    } catch (cloudinaryError) {
+
+                        console.error(
+                            "Cloudinary delete error:",
+                            cloudinaryError
+                        );
+
+                        return res.status(500).send(
+                            "Failed to delete video from Cloudinary"
+                        );
+                    }
+                }
+
+
+                // ==========================================
+                // Delete database record
+                // ==========================================
+
+                db.query(
+                    `
+                    DELETE FROM videos
+                    WHERE id = ?
+                    `,
+                    [id],
+                    (deleteErr) => {
+
+                        if (deleteErr) {
+
+                            console.error(
+                                "Error deleting video:",
+                                deleteErr
+                            );
+
+                            return res.status(500).send(
+                                "Database Error"
+                            );
+                        }
+
+                        console.log(
+                            "✅ Video deleted from database"
+                        );
+
+                        res.redirect("/admin/videos");
+
+                    }
+                );
+
+            }
+        );
+
+    } catch (error) {
+
+        console.error(
+            "Error deleting video:",
+            error
+        );
+
+        res.status(500).send(
+            "Failed to delete video"
+        );
+
+    }
+
 };

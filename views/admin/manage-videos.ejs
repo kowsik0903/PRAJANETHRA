@@ -34,7 +34,7 @@
                             <th>#</th>
                             <th>Title</th>
                             <th>Category</th>
-                            <th>YouTube</th>
+                            <th>Video Type</th>
                             <th>Status</th>
                             <th>Date</th>
                             <th>Actions</th>
@@ -67,10 +67,14 @@
 
                             <tr>
 
+                                <!-- Number -->
+
                                 <td>
                                     <%= index + 1 %>
                                 </td>
 
+
+                                <!-- Title -->
 
                                 <td>
 
@@ -81,6 +85,8 @@
                                 </td>
 
 
+                                <!-- Category -->
+
                                 <td>
 
                                     <%= video.category_name || "No Category" %>
@@ -88,19 +94,38 @@
                                 </td>
 
 
+                                <!-- Video Type -->
+
                                 <td>
 
-                                    <a
-                                        href="<%= video.youtube_url %>"
-                                        target="_blank"
-                                        class="btn btn-sm btn-danger">
+                                    <% if (video.video_type === "upload") { %>
 
-                                        ▶ YouTube
+                                        <a
+                                            href="<%= video.video_url %>"
+                                            target="_blank"
+                                            class="btn btn-sm btn-primary">
 
-                                    </a>
+                                            📹 Uploaded Video
+
+                                        </a>
+
+                                    <% } else { %>
+
+                                        <a
+                                            href="<%= video.youtube_url %>"
+                                            target="_blank"
+                                            class="btn btn-sm btn-danger">
+
+                                            ▶ YouTube
+
+                                        </a>
+
+                                    <% } %>
 
                                 </td>
 
+
+                                <!-- Status -->
 
                                 <td>
 
@@ -121,12 +146,16 @@
                                 </td>
 
 
+                                <!-- Date -->
+
                                 <td>
 
                                     <%= new Date(video.created_at).toLocaleDateString() %>
 
                                 </td>
 
+
+                                <!-- Actions -->
 
                                 <td>
 
