@@ -319,9 +319,10 @@ exports.videoDetails = (req, res) => {
                 }
 
                 res.render("user/video-details", {
-                    video,
-                    categories
-                });
+    video,
+    categories,
+    item: video
+});
 
             }
         );
