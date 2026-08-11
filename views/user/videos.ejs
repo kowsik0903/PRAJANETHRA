@@ -155,11 +155,25 @@
                         <% } %>
 
 
-                        <small class="text-muted">
+                        <small class="text-muted d-block mb-3">
 
                             <%= new Date(video.created_at).toLocaleDateString() %>
 
                         </small>
+
+
+                        <!-- Share Button -->
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary btn-sm share-video-btn"
+                            data-video-id="<%= video.id %>"
+                            data-video-title="<%= video.title %>">
+
+                            <i class="bi bi-share"></i>
+                            Share
+
+                        </button>
 
                     </div>
 
@@ -175,5 +189,67 @@
 ```
 
 </div>
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const shareButtons =
+        document.querySelectorAll(".share-video-btn");
+
+
+    shareButtons.forEach(function (button) {
+
+        button.addEventListener("click", async function () {
+
+            const videoId = this.dataset.videoId;
+            const title = this.dataset.videoTitle;
+
+
+            const url =
+                window.location.origin +
+                "/video/" +
+                videoId;
+
+
+            if (navigator.share) {
+
+                try {
+
+                    await navigator.share({
+                        title: title,
+                        text: title,
+                        url: url
+                    });
+
+                } catch (error) {
+
+                    console.log("Share cancelled");
+
+                }
+
+            } else {
+
+                try {
+
+                    await navigator.clipboard.writeText(url);
+
+                    alert("Video link copied!");
+
+                } catch (error) {
+
+                    alert("Unable to copy video link.");
+
+                }
+
+            }
+
+        });
+
+    });
+
+});
+
+</script>
 
 <%- include("../layouts/footer") %>
