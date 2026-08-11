@@ -4,50 +4,125 @@
 
 <div class="container py-5">
 
-    <div class="row justify-content-center">
+```
+<div class="row justify-content-center">
 
-        <div class="col-lg-9">
+    <div class="col-lg-9">
 
-            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
 
-                <div class="card-body p-4">
+            <div class="card-body p-4">
 
-                    <span class="badge bg-danger mb-3">
-                        🎥 <%= video.category_name || "Video News" %>
-                    </span>
+                <span class="badge bg-danger mb-3">
+                    🎥 <%= video.category_name || "Video News" %>
+                </span>
 
-                   <h1 class="fw-bold mb-4 video-detail-title">
-    <%= video.title %>
-</h1>
 
-                    <div class="video-detail-wrapper mb-4">
+                <h1 class="fw-bold mb-4 video-detail-title">
+                    <%= video.title %>
+                </h1>
 
-                        <iframe
-                            src="<%= video.youtube_url %>"
-                            title="<%= video.title %>"
-                            allowfullscreen>
-                        </iframe>
 
-                    </div>
+                <!-- VIDEO PLAYER -->
 
-                    <% if (video.description) { %>
+                <div class="video-detail-wrapper mb-4">
 
-                        <p class="text-muted">
-                            <%= video.description %>
-                        </p>
+                    <% if (video.video_type === "upload" && video.video_url) { %>
+
+                        <!-- Uploaded Cloudinary Video -->
+
+                        <video
+                            controls
+                            preload="metadata"
+                            playsinline>
+
+                            <source
+                                src="<%= video.video_url %>"
+                                type="video/mp4">
+
+                            Your browser does not support the video player.
+
+                        </video>
+
+
+                    <% } else if (video.youtube_url) { %>
+
+                        <!-- YouTube Video -->
+
+                        <%
+                            let videoId = "";
+                            const youtubeUrl = video.youtube_url || "";
+
+                            if (youtubeUrl.includes("watch?v=")) {
+
+                                videoId = youtubeUrl
+                                    .split("watch?v=")[1]
+                                    .split("&")[0];
+
+                            } else if (youtubeUrl.includes("youtu.be/")) {
+
+                                videoId = youtubeUrl
+                                    .split("youtu.be/")[1]
+                                    .split("?")[0];
+
+                            } else if (youtubeUrl.includes("/embed/")) {
+
+                                videoId = youtubeUrl
+                                    .split("/embed/")[1]
+                                    .split("?")[0];
+
+                            }
+                        %>
+
+
+                        <% if (videoId) { %>
+
+                            <iframe
+                                src="https://www.youtube.com/embed/<%= videoId %>"
+                                title="<%= video.title %>"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                allowfullscreen>
+                            </iframe>
+
+                        <% } else { %>
+
+                            <div class="video-unavailable">
+                                Video unavailable
+                            </div>
+
+                        <% } %>
+
+
+                    <% } else { %>
+
+                        <div class="video-unavailable">
+                            Video unavailable
+                        </div>
 
                     <% } %>
 
-                    <button
-                        class="btn btn-outline-primary"
-                        onclick="shareVideo()">
-
-                        <i class="bi bi-share"></i>
-                        Share Video
-
-                    </button>
-
                 </div>
+
+
+                <% if (video.description) { %>
+
+                    <p class="text-muted">
+                        <%= video.description %>
+                    </p>
+
+                <% } %>
+
+
+                <button
+                    type="button"
+                    class="btn btn-outline-primary"
+                    onclick="shareVideo()">
+
+                    <i class="bi bi-share"></i>
+                    Share Video
+
+                </button>
 
             </div>
 
@@ -56,43 +131,72 @@
     </div>
 
 </div>
+```
+
+</div>
 
 <style>
 
 .video-detail-wrapper {
+
     width: 100%;
     max-width: 800px;
     margin: 0 auto;
     aspect-ratio: 16 / 9;
+
 }
 
-.video-detail-wrapper iframe {
+
+.video-detail-wrapper iframe,
+.video-detail-wrapper video {
+
     width: 100%;
     height: 100%;
     border: 0;
     border-radius: 12px;
+    object-fit: cover;
+
+}
+
+
+.video-unavailable {
+
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f5f5;
+    color: #777;
+    border-radius: 12px;
+
 }
 
 </style>
 
 <script>
+
 async function shareVideo() {
 
     const url = window.location.href;
+
 
     const title = document
         .querySelector(".video-detail-title")
         .textContent
         .trim();
 
+
     if (navigator.share) {
 
         try {
 
             await navigator.share({
+
                 title: title,
                 text: title,
                 url: url
+
             });
 
         } catch (error) {
@@ -118,6 +222,7 @@ async function shareVideo() {
     }
 
 }
+
 </script>
 
 <%- include("../layouts/footer") %>
