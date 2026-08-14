@@ -1,100 +1,113 @@
 <%- include("../layouts/header") %>
 
+<%- include("../layouts/navbar") %>
+
 <div class="container py-5">
 
-```
-<div class="text-center mb-5">
+    <div class="text-center mb-5">
 
-    <h2 class="fw-bold">
-        🎥 Video News
-    </h2>
+        <h2 class="fw-bold">
+            🎥 Video News
+        </h2>
 
-    <p class="text-muted">
-        Latest news videos from PRAJANETHRA
-    </p>
-
-</div>
-
-
-<% if (!videos || videos.length === 0) { %>
-
-    <div class="text-center py-5">
-
-        <h4 class="text-muted">
-            No videos available.
-        </h4>
+        <p class="text-muted">
+            Latest news videos from PRAJANETHRA
+        </p>
 
     </div>
 
-<% } else { %>
 
-    <div class="row g-4">
+    <% if (!videos || videos.length === 0) { %>
 
-        <% videos.forEach(video => { %>
+        <div class="text-center py-5">
 
-            <div class="col-lg-6 col-xl-4">
+            <h4 class="text-muted">
+                No videos available.
+            </h4>
 
-                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+        </div>
 
-                    <div class="ratio ratio-16x9">
+    <% } else { %>
 
-                        <% if (video.video_type === "upload" && video.video_url) { %>
+        <div class="row g-4">
 
-                            <!-- Uploaded Cloudinary Video -->
+            <% videos.forEach(video => { %>
 
-                            <video
-                                controls
-                                preload="metadata"
-                                style="width: 100%; height: 100%; object-fit: cover;">
+                <div class="col-lg-6 col-xl-4">
 
-                                <source
-                                    src="<%= video.video_url %>"
-                                    type="video/mp4">
-
-                                Your browser does not support the video player.
-
-                            </video>
+                    <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
 
 
-                        <% } else if (video.youtube_url) { %>
+                        <!-- VIDEO -->
 
-                            <!-- YouTube Video -->
+                        <div class="ratio ratio-16x9">
 
-                            <%
-                                let videoId = "";
-                                const youtubeUrl = video.youtube_url || "";
+                            <% if (video.video_type === "upload" && video.video_url) { %>
 
-                                if (youtubeUrl.includes("watch?v=")) {
+                                <video
+                                    controls
+                                    preload="metadata"
+                                    style="width:100%; height:100%; object-fit:cover;">
 
-                                    videoId = youtubeUrl
-                                        .split("watch?v=")[1]
-                                        .split("&")[0];
+                                    <source
+                                        src="<%= video.video_url %>"
+                                        type="video/mp4">
 
-                                } else if (youtubeUrl.includes("youtu.be/")) {
+                                    Your browser does not support the video player.
 
-                                    videoId = youtubeUrl
-                                        .split("youtu.be/")[1]
-                                        .split("?")[0];
-
-                                } else if (youtubeUrl.includes("/embed/")) {
-
-                                    videoId = youtubeUrl
-                                        .split("/embed/")[1]
-                                        .split("?")[0];
-
-                                }
-                            %>
+                                </video>
 
 
-                            <% if (videoId) { %>
+                            <% } else if (video.youtube_url) { %>
 
-                                <iframe
-                                    src="https://www.youtube.com/embed/<%= videoId %>"
-                                    title="<%= video.title %>"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    allowfullscreen>
-                                </iframe>
+                                <%
+                                    let videoId = "";
+                                    const youtubeUrl = video.youtube_url || "";
+
+                                    if (youtubeUrl.includes("watch?v=")) {
+
+                                        videoId = youtubeUrl
+                                            .split("watch?v=")[1]
+                                            .split("&")[0];
+
+                                    } else if (youtubeUrl.includes("youtu.be/")) {
+
+                                        videoId = youtubeUrl
+                                            .split("youtu.be/")[1]
+                                            .split("?")[0];
+
+                                    } else if (youtubeUrl.includes("/embed/")) {
+
+                                        videoId = youtubeUrl
+                                            .split("/embed/")[1]
+                                            .split("?")[0];
+
+                                    }
+                                %>
+
+
+                                <% if (videoId) { %>
+
+                                    <iframe
+                                        src="https://www.youtube.com/embed/<%= videoId %>"
+                                        title="<%= video.title %>"
+                                        frameborder="0"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen>
+                                    </iframe>
+
+                                <% } else { %>
+
+                                    <div class="d-flex align-items-center justify-content-center bg-light h-100">
+
+                                        <span class="text-muted">
+                                            Video unavailable
+                                        </span>
+
+                                    </div>
+
+                                <% } %>
+
 
                             <% } else { %>
 
@@ -108,87 +121,101 @@
 
                             <% } %>
 
+                        </div>
 
-                        <% } else { %>
 
-                            <!-- No valid video URL -->
+                        <!-- CONTENT -->
 
-                            <div class="d-flex align-items-center justify-content-center bg-light h-100">
+                        <div class="card-body">
 
-                                <span class="text-muted">
-                                    Video unavailable
+                            <!-- TITLE -->
+
+                            <h5 class="card-title fw-bold">
+
+                                <%= video.title %>
+
+                            </h5>
+
+
+                            <!-- CATEGORY -->
+
+                            <% if (video.category_name) { %>
+
+                                <span class="badge bg-danger mb-2">
+
+                                    <%= video.category_name %>
+
                                 </span>
+
+                            <% } %>
+
+
+                            <!-- SHORT DESCRIPTION -->
+
+                            <% if (video.short_description) { %>
+
+                                <p class="card-text text-muted">
+
+                                    <%= video.short_description %>
+
+                                </p>
+
+                            <% } %>
+
+
+                            <!-- DATE -->
+
+                            <small class="text-muted d-block mb-3">
+
+                                <%= new Date(video.created_at).toLocaleDateString() %>
+
+                            </small>
+
+
+                            <!-- BUTTONS -->
+
+                            <div class="d-flex gap-2">
+
+                                <!-- Read / Watch Details -->
+
+                                <a
+                                    href="/videos/<%= video.id %>"
+                                    class="btn btn-danger btn-sm">
+
+                                    🎥 Watch & Read
+
+                                </a>
+
+
+                                <!-- Share -->
+
+                                <button
+                                    type="button"
+                                    class="btn btn-outline-primary btn-sm share-video-btn"
+                                    data-video-id="<%= video.id %>"
+                                    data-video-title="<%= video.title %>">
+
+                                    <i class="bi bi-share"></i>
+                                    Share
+
+                                </button>
 
                             </div>
 
-                        <% } %>
-
-                    </div>
-
-
-                    <div class="card-body">
-
-                        <h5 class="card-title fw-bold">
-                            <%= video.title %>
-                        </h5>
-
-
-                        <% if (video.category_name) { %>
-
-                            <span class="badge bg-danger mb-2">
-
-                                <%= video.category_name %>
-
-                            </span>
-
-                        <% } %>
-
-
-                        <% if (video.description) { %>
-
-                            <p class="card-text text-muted">
-
-                                <%= video.description %>
-
-                            </p>
-
-                        <% } %>
-
-
-                        <small class="text-muted d-block mb-3">
-
-                            <%= new Date(video.created_at).toLocaleDateString() %>
-
-                        </small>
-
-
-                        <!-- Share Button -->
-
-                        <button
-                            type="button"
-                            class="btn btn-outline-primary btn-sm share-video-btn"
-                            data-video-id="<%= video.id %>"
-                            data-video-title="<%= video.title %>">
-
-                            <i class="bi bi-share"></i>
-                            Share
-
-                        </button>
+                        </div>
 
                     </div>
 
                 </div>
 
-            </div>
+            <% }) %>
 
-        <% }) %>
+        </div>
 
-    </div>
-
-<% } %>
-```
+    <% } %>
 
 </div>
+
 
 <script>
 
@@ -203,12 +230,13 @@ document.addEventListener("DOMContentLoaded", function () {
         button.addEventListener("click", async function () {
 
             const videoId = this.dataset.videoId;
+
             const title = this.dataset.videoTitle;
 
 
             const url =
                 window.location.origin +
-                "/video/" +
+                "/videos/" +
                 videoId;
 
 
@@ -217,9 +245,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 try {
 
                     await navigator.share({
+
                         title: title,
+
                         text: title,
+
                         url: url
+
                     });
 
                 } catch (error) {
@@ -251,5 +283,6 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 </script>
+
 
 <%- include("../layouts/footer") %>

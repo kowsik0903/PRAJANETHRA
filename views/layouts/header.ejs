@@ -4,24 +4,21 @@
 
 <head>
 
-```
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <%
-    const isVideo =
-        typeof item !== "undefined" &&
-        typeof item.video_type !== "undefined";
 
-    let metaTitle =
-        typeof item !== "undefined"
-            ? item.title
-            : "PRAJANEATHRA";
+    /*
+     * ==========================================
+     * DEFAULT META VALUES
+     * ==========================================
+     */
+
+    let metaTitle = "PRAJANEATHRA";
 
     let metaDescription =
-        typeof item !== "undefined" && item.description
-            ? item.description
-            : "Latest Telugu News from PRAJANEATHRA";
+        "Latest Telugu News from PRAJANEATHRA";
 
     let metaUrl =
         "https://prajanethra.onrender.com";
@@ -29,40 +26,101 @@
     let metaImage =
         "https://prajanethra.onrender.com/logo.png";
 
+    let isVideo = false;
 
-    if (isVideo) {
 
-        metaUrl =
-            "https://prajanethra.onrender.com/video/" +
-            item.id;
+    /*
+     * ==========================================
+     * VIDEO PAGE
+     * ==========================================
+     *
+     * video-details controller sends:
+     *
+     * video
+     * categories
+     * item: video
+     *
+     */
+
+    if (
+        typeof video !== "undefined" &&
+        video
+    ) {
+
+        isVideo = true;
+
+        metaTitle =
+            video.title || "PRAJANETHRA";
 
 
         /*
-         * YouTube thumbnail
+         * IMPORTANT:
+         * Use short_description
          */
 
-        if (item.youtube_url) {
+        metaDescription =
+            video.short_description ||
+            video.content ||
+            "Latest video news from PRAJANETHRA";
+
+
+        /*
+         * IMPORTANT:
+         * Your actual route is:
+         *
+         * /videos/:id
+         */
+
+        metaUrl =
+            "https://prajanethra.onrender.com/videos/" +
+            video.id;
+
+
+        /*
+         * ======================================
+         * YOUTUBE THUMBNAIL
+         * ======================================
+         */
+
+        if (
+            video.youtube_url &&
+            video.youtube_url.trim() !== ""
+        ) {
 
             let youtubeId = "";
 
-            if (item.youtube_url.includes("watch?v=")) {
+            const youtubeUrl =
+                video.youtube_url.trim();
+
+
+            if (
+                youtubeUrl.includes("watch?v=")
+            ) {
 
                 youtubeId =
-                    item.youtube_url
+                    youtubeUrl
                         .split("watch?v=")[1]
                         .split("&")[0];
 
-            } else if (item.youtube_url.includes("youtu.be/")) {
+            }
+
+            else if (
+                youtubeUrl.includes("youtu.be/")
+            ) {
 
                 youtubeId =
-                    item.youtube_url
+                    youtubeUrl
                         .split("youtu.be/")[1]
                         .split("?")[0];
 
-            } else if (item.youtube_url.includes("/embed/")) {
+            }
+
+            else if (
+                youtubeUrl.includes("/embed/")
+            ) {
 
                 youtubeId =
-                    item.youtube_url
+                    youtubeUrl
                         .split("/embed/")[1]
                         .split("?")[0];
 
@@ -74,7 +132,7 @@
                 metaImage =
                     "https://img.youtube.com/vi/" +
                     youtubeId +
-                    "/hqdefault.jpg";
+                    "/maxresdefault.jpg";
 
             }
 
@@ -82,33 +140,63 @@
 
 
         /*
-         * Cloudinary uploaded video thumbnail
+         * ======================================
+         * CLOUDINARY VIDEO THUMBNAIL
+         * ======================================
          */
 
-        else if (item.video_url) {
+        else if (
+            video.video_url &&
+            video.video_url.trim() !== ""
+        ) {
 
             metaImage =
-                item.video_url
+                video.video_url
                     .replace(
                         "/video/upload/",
                         "/video/upload/so_0/"
                     )
-                    .replace(/\.(mp4|webm|mov)$/i, ".jpg");
+                    .replace(
+                        /\.(mp4|webm|mov)$/i,
+                        ".jpg"
+                    );
 
         }
 
-    } else if (typeof item !== "undefined") {
+    }
 
-        /*
-         * News article
-         */
+
+    /*
+     * ==========================================
+     * NORMAL NEWS ARTICLE
+     * ==========================================
+     */
+
+    else if (
+        typeof item !== "undefined" &&
+        item
+    ) {
+
+        metaTitle =
+            item.title || "PRAJANETHRA";
+
+
+        metaDescription =
+            item.short_description ||
+            item.description ||
+            item.content ||
+            "Latest Telugu News from PRAJANETHRA";
+
 
         metaUrl =
             "https://prajanethra.onrender.com/news/" +
             item.id;
 
 
-        if (item.image) {
+        if (
+            item.image &&
+            item.image.trim() !== ""
+        ) {
 
             metaImage = item.image;
 
@@ -124,65 +212,126 @@
 </title>
 
 
-<!-- Open Graph -->
+<!-- ========================================== -->
+<!-- BASIC DESCRIPTION -->
+<!-- ========================================== -->
 
-<meta property="og:title"
-      content="<%= metaTitle %>">
-
-<meta property="og:description"
-      content="<%= metaDescription %>">
-
-<meta property="og:image"
-      content="<%= metaImage %>">
-
-<meta property="og:image:secure_url"
-      content="<%= metaImage %>">
-
-<meta property="og:image:type"
-      content="image/jpeg">
-
-<meta property="og:image:width"
-      content="1200">
-
-<meta property="og:image:height"
-      content="630">
-
-<meta property="og:url"
-      content="<%= metaUrl %>">
-
-<meta property="og:type"
-      content="<%= isVideo ? 'video.other' : 'article' %>">
-
-<meta property="og:site_name"
-      content="PRAJANEATHRA">
+<meta
+    name="description"
+    content="<%= metaDescription %>"
+>
 
 
-<!-- Twitter -->
+<!-- ========================================== -->
+<!-- OPEN GRAPH -->
+<!-- ========================================== -->
 
-<meta name="twitter:card"
-      content="summary_large_image">
+<meta
+    property="og:title"
+    content="<%= metaTitle %>"
+>
 
-<meta name="twitter:title"
-      content="<%= metaTitle %>">
+<meta
+    property="og:description"
+    content="<%= metaDescription %>"
+>
 
-<meta name="twitter:description"
-      content="<%= metaDescription %>">
+<meta
+    property="og:image"
+    content="<%= metaImage %>"
+>
 
-<meta name="twitter:image"
-      content="<%= metaImage %>">
+<meta
+    property="og:image:secure_url"
+    content="<%= metaImage %>"
+>
+
+<meta
+    property="og:image:type"
+    content="image/jpeg"
+>
+
+<meta
+    property="og:image:width"
+    content="1200"
+>
+
+<meta
+    property="og:image:height"
+    content="630"
+>
+
+<meta
+    property="og:url"
+    content="<%= metaUrl %>"
+>
+
+<meta
+    property="og:type"
+    content="<%= isVideo ? 'video.other' : 'article' %>"
+>
+
+<meta
+    property="og:site_name"
+    content="PRAJANETHRA"
+>
 
 
-<link rel="stylesheet" href="/css/style.css">
+<!-- ========================================== -->
+<!-- TWITTER / X -->
+<!-- ========================================== -->
 
-<link rel="stylesheet" href="/css/responsive.css">
+<meta
+    name="twitter:card"
+    content="summary_large_image"
+>
 
-<link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-    rel="stylesheet">
+<meta
+    name="twitter:title"
+    content="<%= metaTitle %>"
+>
+
+<meta
+    name="twitter:description"
+    content="<%= metaDescription %>"
+>
+
+<meta
+    name="twitter:image"
+    content="<%= metaImage %>"
+>
+
+
+<!-- ========================================== -->
+<!-- CSS -->
+<!-- ========================================== -->
 
 <link
     rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-```
+    href="/css/style.css"
+>
+
+<link
+    rel="stylesheet"
+    href="/css/responsive.css"
+>
+
+<link
+    rel="stylesheet"
+    href="/css/video-news.css"
+>
+
+
+<link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+>
+
+
+<link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+>
+
 
 </head>

@@ -61,17 +61,41 @@
                     </div>
 
 
-                    <!-- Description -->
+                    <!-- Short Description -->
                     <div class="mb-4">
                         <label class="form-label fw-bold">
-                            Video Description
+                            Short Description
                         </label>
 
                         <textarea
-                            name="description"
-                            rows="5"
+                            name="short_description"
+                            rows="3"
                             class="form-control"
-                            placeholder="Enter Video Description"></textarea>
+                            placeholder="Enter a short description of the video"
+                            required></textarea>
+
+                        <div class="form-text">
+                            A short summary that will appear on video cards.
+                        </div>
+                    </div>
+
+
+                    <!-- Full Video Content -->
+                    <div class="mb-4">
+                        <label class="form-label fw-bold">
+                            Full Video Content
+                        </label>
+
+                        <textarea
+                            name="content"
+                            rows="10"
+                            class="form-control"
+                            placeholder="Enter the complete video news content"
+                            required></textarea>
+
+                        <div class="form-text">
+                            Enter the complete news/article content related to this video.
+                        </div>
                     </div>
 
 
@@ -85,6 +109,7 @@
                         <div class="d-flex gap-4">
 
                             <div class="form-check">
+
                                 <input
                                     class="form-check-input"
                                     type="radio"
@@ -100,6 +125,7 @@
                                     YouTube URL
 
                                 </label>
+
                             </div>
 
 
@@ -233,14 +259,23 @@
 <!-- Video Source Toggle -->
 <script>
 
-    const youtubeSource = document.getElementById("youtubeSource");
-    const uploadSource = document.getElementById("uploadSource");
+    const youtubeSource =
+        document.getElementById("youtubeSource");
 
-    const youtubeSection = document.getElementById("youtubeSection");
-    const uploadSection = document.getElementById("uploadSection");
+    const uploadSource =
+        document.getElementById("uploadSource");
 
-    const youtubeUrl = document.getElementById("youtubeUrl");
-    const videoFile = document.getElementById("videoFile");
+    const youtubeSection =
+        document.getElementById("youtubeSection");
+
+    const uploadSection =
+        document.getElementById("uploadSection");
+
+    const youtubeUrl =
+        document.getElementById("youtubeUrl");
+
+    const videoFile =
+        document.getElementById("videoFile");
 
 
     function updateVideoSource() {
@@ -278,9 +313,15 @@
     }
 
 
-    youtubeSource.addEventListener("change", updateVideoSource);
+    youtubeSource.addEventListener(
+        "change",
+        updateVideoSource
+    );
 
-    uploadSource.addEventListener("change", updateVideoSource);
+    uploadSource.addEventListener(
+        "change",
+        updateVideoSource
+    );
 
 </script>
 

@@ -62,6 +62,10 @@ const homeRoutes = require("./routes/homeRoutes");
 
 app.use("/", homeRoutes);
 
+const videoRoutes = require("./routes/videoRoutes");
+
+app.use("/admin/videos", videoRoutes);
+
 
 // Category API
 app.use("/api/categories", categoryRoutes);

@@ -1,229 +1,314 @@
-<!-- Video News -->
+<!-- ============================= -->
+<!-- VIDEO NEWS SECTION -->
+<!-- ============================= -->
 
-<div class="container my-5">
+<section class="video-news-section py-5">
 
-```
-<div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="container">
 
-    <div>
-        <h2 class="fw-bold mb-1">
-            🎥 Video News
-        </h2>
+        <!-- SECTION HEADER -->
 
-        <p class="text-muted mb-0">
-            Latest news videos from PRAJANETHRA
-        </p>
-    </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
 
-    <a href="/videos" class="btn btn-danger">
-        View All Videos
-    </a>
+            <div>
 
-</div>
+                <h2 class="fw-bold mb-1">
+                    🎥 Video News
+                </h2>
 
-
-<% if (videos && videos.length > 0) { %>
-
-    <div class="row g-4">
-
-        <% videos.forEach(video => { %>
-
-            <div class="col-lg-4 col-md-6">
-
-                <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-
-                    <div class="ratio ratio-16x9">
-
-                        <% if (video.video_type === "upload" && video.video_url) { %>
-
-                            <!-- Uploaded Cloudinary Video -->
-
-                            <video
-                                controls
-                                preload="metadata"
-                                style="width: 100%; height: 100%; object-fit: cover;">
-
-                                <source
-                                    src="<%= video.video_url %>"
-                                    type="video/mp4">
-
-                                Your browser does not support the video player.
-
-                            </video>
-
-
-                        <% } else if (video.youtube_url) { %>
-
-                            <!-- YouTube Video -->
-
-                            <%
-                                let videoId = "";
-                                const youtubeUrl = video.youtube_url || "";
-
-                                if (youtubeUrl.includes("watch?v=")) {
-
-                                    videoId = youtubeUrl
-                                        .split("watch?v=")[1]
-                                        .split("&")[0];
-
-                                } else if (youtubeUrl.includes("youtu.be/")) {
-
-                                    videoId = youtubeUrl
-                                        .split("youtu.be/")[1]
-                                        .split("?")[0];
-
-                                } else if (youtubeUrl.includes("/embed/")) {
-
-                                    videoId = youtubeUrl
-                                        .split("/embed/")[1]
-                                        .split("?")[0];
-
-                                }
-                            %>
-
-                            <% if (videoId) { %>
-
-                                <iframe
-                                    src="https://www.youtube.com/embed/<%= videoId %>"
-                                    title="<%= video.title %>"
-                                    frameborder="0"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    allowfullscreen>
-                                </iframe>
-
-                            <% } else { %>
-
-                                <div class="d-flex align-items-center justify-content-center bg-light h-100">
-                                    <span class="text-muted">
-                                        Video unavailable
-                                    </span>
-                                </div>
-
-                            <% } %>
-
-
-                        <% } else { %>
-
-                            <div class="d-flex align-items-center justify-content-center bg-light h-100">
-                                <span class="text-muted">
-                                    Video unavailable
-                                </span>
-                            </div>
-
-                        <% } %>
-
-                    </div>
-
-
-                    <div class="card-body">
-
-                        <h5 class="fw-bold">
-                            <%= video.title %>
-                        </h5>
-
-
-                        <% if (video.category_name) { %>
-
-                            <span class="badge bg-danger">
-                                <%= video.category_name %>
-                            </span>
-
-                        <% } %>
-
-
-                        <% if (video.description) { %>
-
-                            <p class="text-muted mt-2 mb-0">
-                                <%= video.description %>
-                            </p>
-
-                        <% } %>
-
-
-                        <button
-                            type="button"
-                            class="btn btn-outline-primary btn-sm share-video-btn"
-                            data-video-id="<%= video.id %>"
-                            data-video-title="<%= video.title %>">
-
-                            <i class="bi bi-share"></i>
-                            Share
-
-                        </button>
-
-                    </div>
-
-                </div>
+                <p class="text-muted mb-0">
+                    Latest news videos from PRAJANETHRA
+                </p>
 
             </div>
 
-        <% }) %>
+
+            <a
+                href="/videos"
+                class="btn btn-outline-danger">
+
+                View All Videos
+
+            </a>
+
+        </div>
+
+
+        <!-- VIDEOS -->
+
+        <% if (videos && videos.length > 0) { %>
+
+            <div class="row g-4">
+
+                <% videos.forEach(video => { %>
+
+                    <div class="col-lg-4 col-md-6">
+
+                        <div class="card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+
+
+                            <!-- VIDEO -->
+
+                            <div class="ratio ratio-16x9">
+
+                                <% if (
+                                    video.video_type === "upload" &&
+                                    video.video_url
+                                ) { %>
+
+                                    <video
+                                        controls
+                                        preload="metadata"
+                                        playsinline
+                                        style="
+                                            width:100%;
+                                            height:100%;
+                                            object-fit:cover;
+                                        ">
+
+                                        <source
+                                            src="<%= video.video_url %>"
+                                            type="video/mp4">
+
+                                        Your browser does not support
+                                        the video player.
+
+                                    </video>
+
+
+                                <% } else if (video.youtube_url) { %>
+
+                                    <%
+                                        let videoId = "";
+                                        const youtubeUrl =
+                                            video.youtube_url || "";
+
+                                        if (
+                                            youtubeUrl.includes("watch?v=")
+                                        ) {
+
+                                            videoId =
+                                                youtubeUrl
+                                                .split("watch?v=")[1]
+                                                .split("&")[0];
+
+                                        } else if (
+                                            youtubeUrl.includes("youtu.be/")
+                                        ) {
+
+                                            videoId =
+                                                youtubeUrl
+                                                .split("youtu.be/")[1]
+                                                .split("?")[0];
+
+                                        } else if (
+                                            youtubeUrl.includes("/embed/")
+                                        ) {
+
+                                            videoId =
+                                                youtubeUrl
+                                                .split("/embed/")[1]
+                                                .split("?")[0];
+
+                                        }
+                                    %>
+
+
+                                    <% if (videoId) { %>
+
+                                        <iframe
+                                            src="https://www.youtube.com/embed/<%= videoId %>"
+                                            title="<%= video.title %>"
+                                            frameborder="0"
+                                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                            allowfullscreen>
+                                        </iframe>
+
+                                    <% } else { %>
+
+                                        <div class="video-unavailable">
+
+                                            Video unavailable
+
+                                        </div>
+
+                                    <% } %>
+
+
+                                <% } else { %>
+
+                                    <div class="video-unavailable">
+
+                                        Video unavailable
+
+                                    </div>
+
+                                <% } %>
+
+                            </div>
+
+
+                            <!-- CARD CONTENT -->
+
+                            <div class="card-body p-3">
+
+
+                                <!-- CATEGORY -->
+
+                                <% if (video.category_name) { %>
+
+                                    <span class="badge bg-danger mb-2">
+
+                                        🎥
+                                        <%= video.category_name %>
+
+                                    </span>
+
+                                <% } %>
+
+
+                                <!-- TITLE -->
+
+                                <h5 class="fw-bold mb-2">
+
+                                    <%= video.title %>
+
+                                </h5>
+
+
+                                <!-- SHORT DESCRIPTION -->
+
+                                <% if (video.short_description) { %>
+
+                                    <p class="text-muted mb-3">
+
+                                        <%= video.short_description %>
+
+                                    </p>
+
+                                <% } %>
+
+
+                                <!-- DATE -->
+
+                                <small class="text-muted d-block mb-3">
+
+                                    <%= new Date(
+                                        video.created_at
+                                    ).toLocaleDateString() %>
+
+                                </small>
+
+
+                                <!-- WATCH & READ -->
+
+                                <a
+                                    href="/videos/<%= video.id %>"
+                                    class="btn btn-danger btn-sm">
+
+                                    🎥 Watch & Read
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                <% }) %>
+
+            </div>
+
+
+        <% } else { %>
+
+            <div class="text-center py-5">
+
+                <h5 class="text-muted">
+
+                    No videos available.
+
+                </h5>
+
+            </div>
+
+        <% } %>
 
     </div>
 
-<% } %>
-```
-
-</div>
-
-<script>
-
-document.addEventListener("DOMContentLoaded", function () {
-
-    const shareButtons =
-        document.querySelectorAll(".share-video-btn");
+</section>
 
 
-    shareButtons.forEach(function (button) {
+<style>
 
-        button.addEventListener("click", async function () {
+.video-news-section {
 
-            const videoId = this.dataset.videoId;
-            const title = this.dataset.videoTitle;
+    width: 100%;
 
-
-            const url =
-                window.location.origin +
-                "/video/" +
-                videoId;
+}
 
 
-            if (navigator.share) {
+.video-news-section .ratio {
 
-                try {
+    overflow: hidden;
 
-                    await navigator.share({
-                        title: title,
-                        text: title,
-                        url: url
-                    });
+}
 
-                } catch (error) {
 
-                    console.log("Share cancelled");
+.video-news-section iframe,
+.video-news-section video {
 
-                }
+    width: 100%;
 
-            } else {
+    height: 100%;
 
-                try {
+    border: 0;
 
-                    await navigator.clipboard.writeText(url);
+}
 
-                    alert("Video link copied!");
 
-                } catch (error) {
+.video-news-section .card {
 
-                    alert("Unable to copy video link.");
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease;
 
-                }
+}
 
-            }
 
-        });
+.video-news-section .card:hover {
 
-    });
+    transform: translateY(-3px);
 
-});
+}
 
-</script>
+
+.video-unavailable {
+
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: #f5f5f5;
+
+    color: #777;
+
+}
+
+
+@media (max-width: 768px) {
+
+    .video-news-section {
+
+        padding-top: 30px !important;
+        padding-bottom: 30px !important;
+
+    }
+
+}
+
+</style>

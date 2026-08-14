@@ -33,6 +33,8 @@
 
                             <th>#</th>
                             <th>Title</th>
+                            <th>Short Description</th>
+                            <th>Full Content</th>
                             <th>Category</th>
                             <th>Video Type</th>
                             <th>Status</th>
@@ -46,12 +48,12 @@
 
                     <tbody>
 
-                        <% if (videos.length === 0) { %>
+                        <% if (!videos || videos.length === 0) { %>
 
                             <tr>
 
                                 <td
-                                    colspan="7"
+                                    colspan="9"
                                     class="text-center py-4">
 
                                     No videos found.
@@ -63,125 +65,271 @@
                         <% } %>
 
 
-                        <% videos.forEach((video, index) => { %>
+                        <% if (videos && videos.length > 0) { %>
 
-                            <tr>
+                            <% videos.forEach((video, index) => { %>
 
-                                <!-- Number -->
+                                <tr>
 
-                                <td>
-                                    <%= index + 1 %>
-                                </td>
+                                    <!-- Number -->
 
-
-                                <!-- Title -->
-
-                                <td>
-
-                                    <strong>
-                                        <%= video.title %>
-                                    </strong>
-
-                                </td>
+                                    <td>
+                                        <%= index + 1 %>
+                                    </td>
 
 
-                                <!-- Category -->
+                                    <!-- Title -->
 
-                                <td>
+                                    <td style="min-width: 200px;">
 
-                                    <%= video.category_name || "No Category" %>
+                                        <strong>
+                                            <%= video.title %>
+                                        </strong>
 
-                                </td>
-
-
-                                <!-- Video Type -->
-
-                                <td>
-
-                                    <% if (video.video_type === "upload") { %>
-
-                                        <a
-                                            href="<%= video.video_url %>"
-                                            target="_blank"
-                                            class="btn btn-sm btn-primary">
-
-                                            📹 Uploaded Video
-
-                                        </a>
-
-                                    <% } else { %>
-
-                                        <a
-                                            href="<%= video.youtube_url %>"
-                                            target="_blank"
-                                            class="btn btn-sm btn-danger">
-
-                                            ▶ YouTube
-
-                                        </a>
-
-                                    <% } %>
-
-                                </td>
+                                    </td>
 
 
-                                <!-- Status -->
+                                    <!-- Short Description -->
 
-                                <td>
+                                    <td style="min-width: 250px;">
 
-                                    <% if (video.status === "published") { %>
+                                        <% if (video.short_description) { %>
 
-                                        <span class="badge bg-success">
-                                            Published
-                                        </span>
+                                            <div
+                                                class="text-muted"
+                                                style="
+                                                    max-width: 300px;
+                                                    white-space: normal;
+                                                    line-height: 1.5;
+                                                ">
 
-                                    <% } else { %>
+                                                <%= video.short_description %>
 
-                                        <span class="badge bg-secondary">
-                                            Draft
-                                        </span>
+                                            </div>
 
-                                    <% } %>
+                                        <% } else { %>
 
-                                </td>
+                                            <span class="text-muted">
+                                                No short description
+                                            </span>
 
+                                        <% } %>
 
-                                <!-- Date -->
-
-                                <td>
-
-                                    <%= new Date(video.created_at).toLocaleDateString() %>
-
-                                </td>
-
-
-                                <!-- Actions -->
-
-                                <td>
-
-                                    <a
-                                        href="/admin/videos/edit/<%= video.id %>"
-                                        class="btn btn-sm btn-primary">
-
-                                        ✏️ Edit
-
-                                    </a>
+                                    </td>
 
 
-                                    <a
-                                        href="/admin/videos/delete/<%= video.id %>"
-                                        class="btn btn-sm btn-danger"
-                                        onclick="return confirm('Are you sure you want to delete this video?');">
+                                    <!-- Full Content -->
 
-                                        🗑️ Delete
+                                    <td>
 
-                                    </a>
+    <% if (video.content) { %>
 
-                                </td>
+        <button
+            type="button"
+            class="btn btn-sm btn-outline-info"
+            data-bs-toggle="modal"
+            data-bs-target="#contentModal<%= video.id %>">
 
-                            </tr>
+            📖 Read Content
 
-                        <% }) %>
+        </button>
+
+    <% } else { %>
+
+        <span class="text-muted">
+            No full content
+        </span>
+
+    <% } %>
+
+</td>
+
+
+                                    <!-- Category -->
+
+                                    <td>
+
+                                        <%= video.category_name || "No Category" %>
+
+                                    </td>
+
+
+                                    <!-- Video Type -->
+
+                                    <td>
+
+                                        <% if (video.video_type === "upload") { %>
+
+                                            <a
+                                                href="<%= video.video_url %>"
+                                                target="_blank"
+                                                class="btn btn-sm btn-primary">
+
+                                                📹 Uploaded Video
+
+                                            </a>
+
+                                        <% } else { %>
+
+                                            <a
+                                                href="<%= video.youtube_url %>"
+                                                target="_blank"
+                                                class="btn btn-sm btn-danger">
+
+                                                ▶ YouTube
+
+                                            </a>
+
+                                        <% } %>
+
+                                    </td>
+
+
+                                    <!-- Status -->
+
+                                    <td>
+
+                                        <% if (video.status === "published") { %>
+
+                                            <span class="badge bg-success">
+                                                Published
+                                            </span>
+
+                                        <% } else { %>
+
+                                            <span class="badge bg-secondary">
+                                                Draft
+                                            </span>
+
+                                        <% } %>
+
+                                    </td>
+
+
+                                    <!-- Date -->
+
+                                    <td>
+
+                                        <%= new Date(video.created_at).toLocaleDateString() %>
+
+                                    </td>
+
+
+                                    <!-- Actions -->
+
+                                    <td>
+
+                                        <div class="d-flex gap-2">
+
+                                            <a
+                                                href="/admin/videos/edit/<%= video.id %>"
+                                                class="btn btn-sm btn-primary">
+
+                                                ✏️ Edit
+
+                                            </a>
+
+
+                                            <a
+                                                href="/admin/videos/delete/<%= video.id %>"
+                                                class="btn btn-sm btn-danger"
+                                                onclick="return confirm('Are you sure you want to delete this video?');">
+
+                                                🗑️ Delete
+
+                                            </a>
+
+                                        </div>
+
+                                    </td>
+
+                                </tr>
+                                <!-- Full Content Modal -->
+
+<div
+    class="modal fade"
+    id="contentModal<%= video.id %>"
+    tabindex="-1"
+    aria-hidden="true">
+
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+
+                <h5 class="modal-title fw-bold">
+                    🎥 <%= video.title %>
+                </h5>
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal">
+                </button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <!-- Short Description -->
+
+                <h6 class="fw-bold">
+                    Short Description
+                </h6>
+
+                <p class="text-muted">
+
+                    <%= video.short_description || "No short description" %>
+
+                </p>
+
+
+                <hr>
+
+
+                <!-- Full Content -->
+
+                <h6 class="fw-bold">
+                    Full Content
+                </h6>
+
+                <div
+                    style="
+                        white-space: pre-line;
+                        line-height: 1.8;
+                    ">
+
+                    <%= video.content || "No full content" %>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal">
+
+                    Close
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+                            <% }) %>
+
+                        <% } %>
 
                     </tbody>
 

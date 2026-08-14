@@ -4,86 +4,110 @@
 
 <div class="container py-5">
 
-```
-<div class="row justify-content-center">
+    <div class="row justify-content-center">
 
-    <div class="col-lg-9">
+        <div class="col-lg-9">
 
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+            <article class="card border-0 shadow-sm rounded-4 overflow-hidden">
 
-            <div class="card-body p-4">
+                <div class="card-body p-4 p-md-5">
 
-                <span class="badge bg-danger mb-3">
-                    🎥 <%= video.category_name || "Video News" %>
-                </span>
+                    <!-- CATEGORY -->
 
+                    <span class="badge bg-danger mb-3">
 
-                <h1 class="fw-bold mb-4 video-detail-title">
-                    <%= video.title %>
-                </h1>
+                        🎥 <%= video.category_name || "Video News" %>
+
+                    </span>
 
 
-                <!-- VIDEO PLAYER -->
+                    <!-- TITLE -->
 
-                <div class="video-detail-wrapper mb-4">
+                    <h1 class="fw-bold mb-3 video-detail-title">
 
-                    <% if (video.video_type === "upload" && video.video_url) { %>
+                        <%= video.title %>
 
-                        <!-- Uploaded Cloudinary Video -->
-
-                        <video
-                            controls
-                            preload="metadata"
-                            playsinline>
-
-                            <source
-                                src="<%= video.video_url %>"
-                                type="video/mp4">
-
-                            Your browser does not support the video player.
-
-                        </video>
+                    </h1>
 
 
-                    <% } else if (video.youtube_url) { %>
+                    <!-- SHORT DESCRIPTION -->
 
-                        <!-- YouTube Video -->
+                    <% if (video.short_description) { %>
 
-                        <%
-                            let videoId = "";
-                            const youtubeUrl = video.youtube_url || "";
+                        <div class="video-short-description">
 
-                            if (youtubeUrl.includes("watch?v=")) {
+                            <%= video.short_description %>
 
-                                videoId = youtubeUrl
-                                    .split("watch?v=")[1]
-                                    .split("&")[0];
+                        </div>
 
-                            } else if (youtubeUrl.includes("youtu.be/")) {
-
-                                videoId = youtubeUrl
-                                    .split("youtu.be/")[1]
-                                    .split("?")[0];
-
-                            } else if (youtubeUrl.includes("/embed/")) {
-
-                                videoId = youtubeUrl
-                                    .split("/embed/")[1]
-                                    .split("?")[0];
-
-                            }
-                        %>
+                    <% } %>
 
 
-                        <% if (videoId) { %>
+                    <!-- VIDEO -->
 
-                            <iframe
-                                src="https://www.youtube.com/embed/<%= videoId %>"
-                                title="<%= video.title %>"
-                                frameborder="0"
-                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                allowfullscreen>
-                            </iframe>
+                    <div class="video-detail-wrapper my-4">
+
+                        <% if (video.video_type === "upload" && video.video_url) { %>
+
+                            <video
+                                controls
+                                preload="metadata"
+                                playsinline>
+
+                                <source
+                                    src="<%= video.video_url %>"
+                                    type="video/mp4">
+
+                                Your browser does not support the video player.
+
+                            </video>
+
+
+                        <% } else if (video.youtube_url) { %>
+
+                            <%
+                                let videoId = "";
+                                const youtubeUrl = video.youtube_url || "";
+
+                                if (youtubeUrl.includes("watch?v=")) {
+
+                                    videoId = youtubeUrl
+                                        .split("watch?v=")[1]
+                                        .split("&")[0];
+
+                                } else if (youtubeUrl.includes("youtu.be/")) {
+
+                                    videoId = youtubeUrl
+                                        .split("youtu.be/")[1]
+                                        .split("?")[0];
+
+                                } else if (youtubeUrl.includes("/embed/")) {
+
+                                    videoId = youtubeUrl
+                                        .split("/embed/")[1]
+                                        .split("?")[0];
+
+                                }
+                            %>
+
+
+                            <% if (videoId) { %>
+
+                                <iframe
+                                    src="https://www.youtube.com/embed/<%= videoId %>"
+                                    title="<%= video.title %>"
+                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                    allowfullscreen>
+                                </iframe>
+
+                            <% } else { %>
+
+                                <div class="video-unavailable">
+                                    Video unavailable
+                                </div>
+
+                            <% } %>
+
 
                         <% } else { %>
 
@@ -93,55 +117,84 @@
 
                         <% } %>
 
+                    </div>
 
-                    <% } else { %>
 
-                        <div class="video-unavailable">
-                            Video unavailable
+                    <!-- FULL NEWS CONTENT -->
+
+                    <% if (video.content) { %>
+
+                        <div class="video-content">
+
+                            <%= video.content %>
+
                         </div>
 
                     <% } %>
 
+
+                    <!-- SHARE -->
+
+                    <div class="mt-4 pt-3 border-top">
+
+                        <button
+                            type="button"
+                            class="btn btn-outline-primary"
+                            onclick="shareVideo()">
+
+                            <i class="bi bi-share"></i>
+
+                            Share Video
+
+                        </button>
+
+                    </div>
+
                 </div>
 
-
-                <% if (video.description) { %>
-
-                    <p class="text-muted">
-                        <%= video.description %>
-                    </p>
-
-                <% } %>
-
-
-                <button
-                    type="button"
-                    class="btn btn-outline-primary"
-                    onclick="shareVideo()">
-
-                    <i class="bi bi-share"></i>
-                    Share Video
-
-                </button>
-
-            </div>
+            </article>
 
         </div>
 
     </div>
 
 </div>
-```
 
-</div>
 
 <style>
+
+.video-detail-title {
+
+    font-size: 38px;
+
+    line-height: 1.3;
+
+}
+
+
+.video-short-description {
+
+    font-size: 19px;
+
+    line-height: 1.7;
+
+    color: #555;
+
+    padding-bottom: 10px;
+
+}
+
 
 .video-detail-wrapper {
 
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto;
+
+    max-width: 850px;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
     aspect-ratio: 16 / 9;
 
 }
@@ -151,10 +204,29 @@
 .video-detail-wrapper video {
 
     width: 100%;
+
     height: 100%;
+
     border: 0;
+
     border-radius: 12px;
+
     object-fit: cover;
+
+}
+
+
+.video-content {
+
+    font-size: 18px;
+
+    line-height: 2;
+
+    color: #222;
+
+    white-space: pre-line;
+
+    margin-top: 25px;
 
 }
 
@@ -162,17 +234,52 @@
 .video-unavailable {
 
     width: 100%;
+
     height: 100%;
+
     display: flex;
+
     align-items: center;
+
     justify-content: center;
+
     background: #f5f5f5;
+
     color: #777;
+
     border-radius: 12px;
 
 }
 
+
+@media (max-width: 768px) {
+
+    .video-detail-title {
+
+        font-size: 28px;
+
+    }
+
+
+    .video-short-description {
+
+        font-size: 16px;
+
+    }
+
+
+    .video-content {
+
+        font-size: 16px;
+
+        line-height: 1.8;
+
+    }
+
+}
+
 </style>
+
 
 <script>
 
@@ -180,11 +287,25 @@ async function shareVideo() {
 
     const url = window.location.href;
 
+    const title =
+        document
+            .querySelector(".video-detail-title")
+            .textContent
+            .trim();
 
-    const title = document
-        .querySelector(".video-detail-title")
-        .textContent
-        .trim();
+    const descriptionElement =
+        document.querySelector(".video-short-description");
+
+    const description =
+        descriptionElement
+            ? descriptionElement.textContent.trim()
+            : "";
+
+
+    const shareText =
+        description
+            ? title + "\n\n" + description
+            : title;
 
 
     if (navigator.share) {
@@ -194,7 +315,9 @@ async function shareVideo() {
             await navigator.share({
 
                 title: title,
-                text: title,
+
+                text: shareText,
+
                 url: url
 
             });
@@ -209,7 +332,13 @@ async function shareVideo() {
 
         try {
 
-            await navigator.clipboard.writeText(url);
+            await navigator.clipboard.writeText(
+
+                shareText +
+                "\n\n" +
+                url
+
+            );
 
             alert("Video link copied!");
 
@@ -224,5 +353,6 @@ async function shareVideo() {
 }
 
 </script>
+
 
 <%- include("../layouts/footer") %>

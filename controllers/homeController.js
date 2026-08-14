@@ -259,7 +259,7 @@ exports.aboutPage = (req, res) => {
 // Videos Page
 exports.videosPage = (req, res) => {
 
-    const sql = `
+    const videoSql = `
         SELECT videos.*, categories.category_name
         FROM videos
         LEFT JOIN categories
@@ -268,15 +268,32 @@ exports.videosPage = (req, res) => {
         ORDER BY videos.created_at DESC
     `;
 
-    db.query(sql, (err, videos) => {
+    db.query(videoSql, (err, videos) => {
 
         if (err) {
             console.error("Error fetching videos:", err);
             return res.status(500).send("Unable to load videos");
         }
 
-        res.render("user/videos", {
-            videos
+        // Fetch categories for navbar
+        const categorySql = `
+            SELECT *
+            FROM categories
+            ORDER BY category_name ASC
+        `;
+
+        db.query(categorySql, (err, categories) => {
+
+            if (err) {
+                console.error("Error fetching categories:", err);
+                return res.status(500).send("Unable to load categories");
+            }
+
+            res.render("user/videos", {
+                videos,
+                categories
+            });
+
         });
 
     });

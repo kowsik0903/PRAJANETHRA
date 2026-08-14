@@ -23,7 +23,9 @@
                     enctype="multipart/form-data">
 
 
-                    <!-- Title -->
+                    <!-- ===================================== -->
+                    <!-- VIDEO TITLE -->
+                    <!-- ===================================== -->
 
                     <div class="mb-4">
 
@@ -35,15 +37,20 @@
                             type="text"
                             name="title"
                             class="form-control form-control-lg"
-                            value="<%= video.title %>"
+                            value="<%= video.title || '' %>"
+                            placeholder="Enter Video Title"
                             required>
 
                     </div>
 
 
-                    <!-- Category & Status -->
+                    <!-- ===================================== -->
+                    <!-- CATEGORY + STATUS -->
+                    <!-- ===================================== -->
 
                     <div class="row">
+
+                        <!-- Category -->
 
                         <div class="col-md-6 mb-4">
 
@@ -53,17 +60,21 @@
 
                             <select
                                 name="category_id"
-                                class="form-select form-select-lg">
+                                class="form-select form-select-lg"
+                                required>
 
                                 <option value="">
-                                    No Category
+                                    Select Category
                                 </option>
+
 
                                 <% categories.forEach(category => { %>
 
                                     <option
                                         value="<%= category.id %>"
-                                        <%= String(video.category_id) === String(category.id) ? "selected" : "" %>>
+                                        <%= String(video.category_id) === String(category.id)
+                                            ? "selected"
+                                            : "" %>>
 
                                         <%= category.category_name %>
 
@@ -75,6 +86,8 @@
 
                         </div>
 
+
+                        <!-- Status -->
 
                         <div class="col-md-6 mb-4">
 
@@ -88,15 +101,20 @@
 
                                 <option
                                     value="published"
-                                    <%= video.status === "published" ? "selected" : "" %>>
+                                    <%= video.status === "published"
+                                        ? "selected"
+                                        : "" %>>
 
                                     Published
 
                                 </option>
 
+
                                 <option
                                     value="draft"
-                                    <%= video.status === "draft" ? "selected" : "" %>>
+                                    <%= video.status === "draft"
+                                        ? "selected"
+                                        : "" %>>
 
                                     Draft
 
@@ -109,31 +127,64 @@
                     </div>
 
 
-                    <!-- Description -->
+                    <!-- ===================================== -->
+                    <!-- SHORT DESCRIPTION -->
+                    <!-- ===================================== -->
+
+                   <!-- Short Description -->
+
+<div class="mb-4">
+
+    <label class="form-label fw-bold">
+        Short Description
+    </label>
+
+    <textarea
+        name="short_description"
+        rows="4"
+        class="form-control"
+        required><%= video.short_description || "" %></textarea>
+
+</div>
+
+
+                    <!-- ===================================== -->
+                    <!-- FULL NEWS CONTENT -->
+                    <!-- ===================================== -->
+
+                    <!-- Full Content -->
+
+<div class="mb-4">
+
+    <label class="form-label fw-bold">
+        Full Content
+    </label>
+
+    <textarea
+        name="content"
+        rows="12"
+        class="form-control"
+        required><%= video.content || "" %></textarea>
+
+</div>
+
+
+                    <!-- ===================================== -->
+                    <!-- VIDEO SOURCE -->
+                    <!-- ===================================== -->
 
                     <div class="mb-4">
 
                         <label class="form-label fw-bold">
-                            Description
-                        </label>
 
-                        <textarea
-                            name="description"
-                            rows="5"
-                            class="form-control"><%= video.description || "" %></textarea>
-
-                    </div>
-
-
-                    <!-- Video Type -->
-
-                    <div class="mb-4">
-
-                        <label class="form-label fw-bold">
                             Video Source
+
                         </label>
+
 
                         <div class="d-flex gap-4">
+
+                            <!-- YouTube -->
 
                             <div class="form-check">
 
@@ -143,7 +194,9 @@
                                     name="video_source"
                                     id="youtubeSource"
                                     value="youtube"
-                                    <%= video.video_type !== "upload" ? "checked" : "" %>>
+                                    <%= video.video_type !== "upload"
+                                        ? "checked"
+                                        : "" %>>
 
                                 <label
                                     class="form-check-label"
@@ -156,6 +209,8 @@
                             </div>
 
 
+                            <!-- Upload -->
+
                             <div class="form-check">
 
                                 <input
@@ -164,7 +219,9 @@
                                     name="video_source"
                                     id="uploadSource"
                                     value="upload"
-                                    <%= video.video_type === "upload" ? "checked" : "" %>>
+                                    <%= video.video_type === "upload"
+                                        ? "checked"
+                                        : "" %>>
 
                                 <label
                                     class="form-check-label"
@@ -181,14 +238,18 @@
                     </div>
 
 
-                    <!-- YouTube -->
+                    <!-- ===================================== -->
+                    <!-- YOUTUBE URL -->
+                    <!-- ===================================== -->
 
                     <div
                         class="mb-4"
                         id="youtubeSection">
 
                         <label class="form-label fw-bold">
+
                             YouTube Video URL
+
                         </label>
 
                         <input
@@ -196,24 +257,30 @@
                             name="youtube_url"
                             id="youtubeUrl"
                             class="form-control form-control-lg"
-                            value="<%= video.youtube_url || "" %>"
+                            value="<%= video.youtube_url || '' %>"
                             placeholder="https://www.youtube.com/watch?v=...">
 
                         <div class="form-text">
+
                             Paste the YouTube video URL here.
+
                         </div>
 
                     </div>
 
 
-                    <!-- Upload -->
+                    <!-- ===================================== -->
+                    <!-- UPLOAD VIDEO -->
+                    <!-- ===================================== -->
 
                     <div
                         class="mb-4"
                         id="uploadSection">
 
                         <label class="form-label fw-bold">
+
                             Upload New Video
+
                         </label>
 
                         <input
@@ -224,10 +291,17 @@
                             accept="video/*">
 
                         <div class="form-text">
-                            Select a new video only if you want to replace the current uploaded video.
+
+                            Select a new video only if you want
+                            to replace the current uploaded video.
+
                         </div>
 
-                        <% if (video.video_type === "upload" && video.video_url) { %>
+
+                        <% if (
+                            video.video_type === "upload" &&
+                            video.video_url
+                        ) { %>
 
                             <div class="alert alert-info mt-3">
 
@@ -235,7 +309,8 @@
 
                                 <br>
 
-                                Choose a new file above to replace it.
+                                Choose a new file above to replace
+                                the current video.
 
                             </div>
 
@@ -244,7 +319,9 @@
                     </div>
 
 
-                    <!-- Buttons -->
+                    <!-- ===================================== -->
+                    <!-- BUTTONS -->
+                    <!-- ===================================== -->
 
                     <div class="d-flex gap-3">
 
@@ -278,67 +355,103 @@
 </div>
 
 
+<!-- ===================================== -->
+<!-- VIDEO SOURCE TOGGLE -->
+<!-- ===================================== -->
+
 <script>
 
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
 
-    const youtubeSource =
-        document.getElementById("youtubeSource");
-
-    const uploadSource =
-        document.getElementById("uploadSource");
-
-    const youtubeSection =
-        document.getElementById("youtubeSection");
-
-    const uploadSection =
-        document.getElementById("uploadSection");
-
-    const youtubeUrl =
-        document.getElementById("youtubeUrl");
-
-    const videoFile =
-        document.getElementById("videoFile");
+        const youtubeSource =
+            document.getElementById(
+                "youtubeSource"
+            );
 
 
-    function updateVideoSource() {
+        const uploadSource =
+            document.getElementById(
+                "uploadSource"
+            );
 
-        if (youtubeSource.checked) {
 
-            youtubeSection.style.display = "block";
-            uploadSection.style.display = "none";
+        const youtubeSection =
+            document.getElementById(
+                "youtubeSection"
+            );
 
-            youtubeUrl.required = true;
-            videoFile.required = false;
 
-        } else {
+        const uploadSection =
+            document.getElementById(
+                "uploadSection"
+            );
 
-            youtubeSection.style.display = "none";
-            uploadSection.style.display = "block";
 
-            youtubeUrl.required = false;
-            videoFile.required = false;
+        const youtubeUrl =
+            document.getElementById(
+                "youtubeUrl"
+            );
+
+
+        const videoFile =
+            document.getElementById(
+                "videoFile"
+            );
+
+
+        function updateVideoSource() {
+
+            if (youtubeSource.checked) {
+
+                youtubeSection.style.display =
+                    "block";
+
+                uploadSection.style.display =
+                    "none";
+
+
+                youtubeUrl.required = true;
+
+                videoFile.required = false;
+
+
+            } else {
+
+                youtubeSection.style.display =
+                    "none";
+
+                uploadSection.style.display =
+                    "block";
+
+
+                youtubeUrl.required = false;
+
+                videoFile.required = false;
+
+            }
 
         }
 
+
+        youtubeSource.addEventListener(
+            "change",
+            updateVideoSource
+        );
+
+
+        uploadSource.addEventListener(
+            "change",
+            updateVideoSource
+        );
+
+
+        updateVideoSource();
+
     }
 
-
-    youtubeSource.addEventListener(
-        "change",
-        updateVideoSource
-    );
-
-
-    uploadSource.addEventListener(
-        "change",
-        updateVideoSource
-    );
-
-
-    updateVideoSource();
-
-});
+);
 
 </script>
 
