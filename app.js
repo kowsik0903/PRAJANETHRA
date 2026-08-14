@@ -65,7 +65,7 @@ app.use("/", homeRoutes);
 const videoRoutes = require("./routes/videoRoutes");
 app.use("/admin/videos", videoRoutes);
 
-const videoUserRoutes = require("./routes/videoUserRoutes");
+const videoUserRoutes = require("./routes/videoRoutes");
 app.use("/videos", videoUserRoutes);
 
 
