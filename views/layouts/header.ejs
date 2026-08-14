@@ -144,25 +144,32 @@
          * CLOUDINARY VIDEO THUMBNAIL
          * ======================================
          */
+else if (
+    video.video_url &&
+    video.video_url.trim() !== ""
+) {
 
-        else if (
-            video.video_url &&
-            video.video_url.trim() !== ""
-        ) {
+    let cloudinaryVideo =
+        video.video_url.trim();
 
-            metaImage =
-                video.video_url
-                    .replace(
-                        "/video/upload/",
-                        "/video/upload/so_0/"
-                    )
-                    .replace(
-                        /\.(mp4|webm|mov)$/i,
-                        ".jpg"
-                    );
+    /*
+     * Convert Cloudinary video URL
+     * into a JPG thumbnail from the
+     * first frame.
+     */
 
-        }
+    metaImage =
+        cloudinaryVideo
+            .replace(
+                "/video/upload/",
+                "/video/upload/so_0,w_1200,h_630,c_fill/"
+            )
+            .replace(
+    /\.(mp4|webm|mov|mkv|3gp|avi|mpeg|mpg)$/i,
+    ".jpg"
+);
 
+}
     }
 
 
@@ -268,7 +275,7 @@
 
 <meta
     property="og:type"
-    content="<%= isVideo ? 'video.other' : 'article' %>"
+    content="article"
 >
 
 <meta
