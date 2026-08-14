@@ -49,18 +49,21 @@
 
                         <% if (video.video_type === "upload" && video.video_url) { %>
 
-                            <video
-                                controls
-                                preload="metadata"
-                                playsinline>
+                           <video
+    controls
+    controlsList="nodownload noplaybackrate"
+    disablePictureInPicture
+    oncontextmenu="return false;"
+    preload="metadata"
+    style="width: 100%; height: auto;">
 
-                                <source
-                                    src="<%= video.video_url %>"
-                                    type="video/mp4">
+    <source
+        src="<%= video.video_url %>"
+        type="video/mp4">
 
-                                Your browser does not support the video player.
+    Your browser does not support the video player.
 
-                            </video>
+</video>
 
 
                         <% } else if (video.youtube_url) { %>

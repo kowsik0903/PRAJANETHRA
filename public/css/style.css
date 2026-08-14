@@ -1031,3 +1031,9 @@ textarea{
     color:#fff;
 
 }
+
+/* Prevent normal image dragging */
+img {
+    user-select: none;
+    -webkit-user-drag: none;
+}
