@@ -76,6 +76,15 @@ const News = {
         );
 
     },
+    incrementViews: (id, callback) => {
+
+    db.query(
+        "UPDATE news SET views = views + 1 WHERE id=?",
+        [id],
+        callback
+    );
+
+},
 
     delete: (id, callback) => {
 

@@ -380,6 +380,46 @@ exports.videoDetails = (req, res) => {
 
 };
 
+// Increment Video View
+exports.incrementVideoView = (req, res) => {
+
+    const id = req.params.id;
+
+    const sql = `
+        UPDATE videos
+        SET views = views + 1
+        WHERE id = ?
+        AND status = 'published'
+    `;
+
+    db.query(sql, [id], (err, result) => {
+
+        if (err) {
+
+            console.error(
+                "Error updating video views:",
+                err
+            );
+
+            return res.status(500).json({
+                success: false
+            });
+        }
+
+        if (result.affectedRows === 0) {
+
+            return res.status(404).json({
+                success: false
+            });
+        }
+
+        res.json({
+            success: true
+        });
+
+    });
+
+};
 // ==========================================
 // Edit Video Page
 // ==========================================

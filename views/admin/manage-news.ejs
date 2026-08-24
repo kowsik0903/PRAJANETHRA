@@ -49,6 +49,8 @@
 
                             <th>Status</th>
 
+                            <th>Views</th>
+
                             <th>Date</th>
 
                             <th width="180">
@@ -144,12 +146,22 @@
 
                             </td>
 
-                            <td>
-
-                                <%= new Date(item.created_at).toLocaleDateString() %>
-
-                            </td>
-
+                                <td>
+                                    
+            <span class="badge bg-info text-dark">
+            
+                👁 <%= item.views || 0 %>
+            
+            </span>
+        
+        </td>
+        
+        <td>
+        
+            <%= new Date(item.created_at).toLocaleDateString() %>
+        
+        </td>
+        
                             <td>
 
                                 <a href="/admin/news/edit/<%= item.id %>"

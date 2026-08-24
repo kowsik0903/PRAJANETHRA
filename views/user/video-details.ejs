@@ -49,13 +49,14 @@
 
                         <% if (video.video_type === "upload" && video.video_url) { %>
 
-                           <video
-    controls
-    controlsList="nodownload noplaybackrate"
-    disablePictureInPicture
-    oncontextmenu="return false;"
-    preload="metadata"
-    style="width: 100%; height: auto;">
+                          <video
+                                id="uploadedVideo"
+                                controls
+                                controlsList="nodownload noplaybackrate"
+                                disablePictureInPicture
+                                oncontextmenu="return false;"
+                                preload="metadata"
+                                style="width: 100%; height: auto;">
 
     <source
         src="<%= video.video_url %>"
@@ -97,10 +98,11 @@
                             <% if (videoId) { %>
 
                                 <iframe
-                                    src="https://www.youtube.com/embed/<%= videoId %>"
-                                    title="<%= video.title %>"
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                                    allowfullscreen>
+                                        id="youtubeVideo"
+                                        src="https://www.youtube.com/embed/<%= videoId %>?enablejsapi=1"
+                                        title="<%= video.title %>"
+                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                        allowfullscreen>
                                 </iframe>
 
                             <% } else { %>
@@ -355,7 +357,129 @@ async function shareVideo() {
 
 }
 
+/* =========================================
+   VIDEO VIEW COUNT
+========================================= */
+
+let videoViewCounted = false;
+
+
+async function countVideoView() {
+
+    // Prevent multiple views on the same page
+    if (videoViewCounted) {
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            "/videos/<%= video.id %>/view",
+            {
+                method: "POST"
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            videoViewCounted = true;
+
+            console.log("Video view counted");
+
+        } else {
+
+            console.error(
+                "Video view was not counted"
+            );
+
+        }
+
+    } catch (error) {
+
+        console.error(
+            "Error counting video view:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   UPLOADED / CLOUDINARY VIDEO
+========================================= */
+
+const uploadedVideo =
+    document.getElementById("uploadedVideo");
+
+
+if (uploadedVideo) {
+
+    uploadedVideo.addEventListener(
+        "play",
+        countVideoView
+    );
+
+}
+
+
+/* =========================================
+   YOUTUBE VIDEO
+========================================= */
+
+let youtubePlayer;
+
+
+function onYouTubeIframeAPIReady() {
+
+    const youtubeVideo =
+        document.getElementById("youtubeVideo");
+
+
+    if (!youtubeVideo) {
+        return;
+    }
+
+
+    youtubePlayer =
+        new YT.Player(
+            "youtubeVideo",
+            {
+
+                events: {
+
+                    onStateChange:
+                        function(event) {
+
+                            /*
+                             * YouTube state 1
+                             * means PLAYING
+                             */
+
+                            if (event.data === 1) {
+
+                                countVideoView();
+
+                            }
+
+                        }
+
+                }
+
+            }
+        );
+
+}
+
+
+
+
 </script>
+
+<script src="https://www.youtube.com/iframe_api"></script>
 
 
 <%- include("../layouts/footer") %>

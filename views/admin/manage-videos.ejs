@@ -38,6 +38,7 @@
                             <th>Category</th>
                             <th>Video Type</th>
                             <th>Status</th>
+                            <th>Views</th>
                             <th>Date</th>
                             <th>Actions</th>
 
@@ -183,6 +184,11 @@
                                         <% } %>
 
                                     </td>
+                                    <td>
+    <span class="badge bg-primary">
+        👁️ <%= video.views || 0 %>
+    </span>
+</td>
 
 
                                     <!-- Status -->

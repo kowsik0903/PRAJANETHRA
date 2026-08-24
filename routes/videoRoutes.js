@@ -35,4 +35,9 @@ router.get(
     videoController.videoDetails
 );
 
+router.post(
+    "/:id/view",
+    videoController.incrementVideoView
+);
+
 module.exports = router;

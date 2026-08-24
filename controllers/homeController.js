@@ -133,37 +133,48 @@ exports.newsDetails = (req, res) => {
 
     const id = req.params.id;
 
-    const sql = `
-        SELECT news.*, categories.category_name
-        FROM news
-        LEFT JOIN categories
-        ON news.category_id = categories.id
-        WHERE news.id = ?
-    `;
-
-    db.query(sql, [id], (err, result) => {
-
-        if (err) return res.send(err);
-
-        if (result.length === 0) {
-            return res.send("News Not Found");
-        }
-
-        const item = result[0];
-
-        // Fetch categories for the navbar
-        db.query("SELECT * FROM categories", (err, categories) => {
+    // Increase article view count
+    db.query(
+        "UPDATE news SET views = views + 1 WHERE id = ?",
+        [id],
+        (err) => {
 
             if (err) return res.send(err);
 
-            res.render("user/news-details", {
-                item,
-                categories
+            const sql = `
+                SELECT news.*, categories.category_name
+                FROM news
+                LEFT JOIN categories
+                ON news.category_id = categories.id
+                WHERE news.id = ?
+            `;
+
+            db.query(sql, [id], (err, result) => {
+
+                if (err) return res.send(err);
+
+                if (result.length === 0) {
+                    return res.send("News Not Found");
+                }
+
+                const item = result[0];
+
+                // Fetch categories for the navbar
+                db.query("SELECT * FROM categories", (err, categories) => {
+
+                    if (err) return res.send(err);
+
+                    res.render("user/news-details", {
+                        item,
+                        categories
+                    });
+
+                });
+
             });
 
-        });
-
-    });
+        }
+    );
 
 };
 
@@ -304,46 +315,60 @@ exports.videoDetails = (req, res) => {
 
     const id = req.params.id;
 
-    const sql = `
-        SELECT videos.*, categories.category_name
-        FROM videos
-        LEFT JOIN categories
-        ON videos.category_id = categories.id
-        WHERE videos.id = ?
-        AND videos.status = 'published'
-    `;
+    // Increase video view count
+    db.query(
+        "UPDATE videos SET views = views + 1 WHERE id = ?",
+        [id],
+        (err) => {
 
-    db.query(sql, [id], (err, result) => {
+            if (err) {
+                console.error("Error updating video views:", err);
+                return res.status(500).send("Unable to update video views");
+            }
 
-        if (err) {
-            console.error("Error fetching video:", err);
-            return res.status(500).send("Unable to load video");
-        }
+            const sql = `
+                SELECT videos.*, categories.category_name
+                FROM videos
+                LEFT JOIN categories
+                ON videos.category_id = categories.id
+                WHERE videos.id = ?
+                AND videos.status = 'published'
+            `;
 
-        if (result.length === 0) {
-            return res.status(404).send("Video Not Found");
-        }
-
-        const video = result[0];
-
-        db.query(
-            "SELECT * FROM categories ORDER BY category_name",
-            (err, categories) => {
+            db.query(sql, [id], (err, result) => {
 
                 if (err) {
-                    console.error(err);
-                    return res.status(500).send("Database Error");
+                    console.error("Error fetching video:", err);
+                    return res.status(500).send("Unable to load video");
                 }
 
-                res.render("user/video-details", {
-    video,
-    categories,
-    item: video
-});
+                if (result.length === 0) {
+                    return res.status(404).send("Video Not Found");
+                }
 
-            }
-        );
+                const video = result[0];
 
-    });
+                db.query(
+                    "SELECT * FROM categories ORDER BY category_name",
+                    (err, categories) => {
+
+                        if (err) {
+                            console.error(err);
+                            return res.status(500).send("Database Error");
+                        }
+
+                        res.render("user/video-details", {
+                            video,
+                            categories,
+                            item: video
+                        });
+
+                    }
+                );
+
+            });
+
+        }
+    );
 
 };
