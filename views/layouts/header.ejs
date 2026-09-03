@@ -48,71 +48,50 @@
          * ======================================
          */
 
-        if (
-            video.youtube_url &&
-            video.youtube_url.trim() !== ""
-        ) {
+        if (video.youtube_url && video.youtube_url.trim() !== "") {
 
-            const youtubeUrl =
-                video.youtube_url.trim();
+    const youtubeUrl = video.youtube_url.trim();
 
-            let youtubeId = "";
+    let youtubeId = "";
 
+    if (youtubeUrl.includes("watch?v=")) {
 
-            // youtube.com/watch?v=VIDEO_ID
-            if (youtubeUrl.includes("watch?v=")) {
+        youtubeId = youtubeUrl
+            .split("watch?v=")[1]
+            .split("&")[0];
 
-                youtubeId =
-                    youtubeUrl
-                        .split("watch?v=")[1]
-                        .split("&")[0];
+    } else if (youtubeUrl.includes("youtu.be/")) {
 
-            }
+        youtubeId = youtubeUrl
+            .split("youtu.be/")[1]
+            .split("?")[0]
+            .split("&")[0];
 
-            // youtu.be/VIDEO_ID
-            else if (youtubeUrl.includes("youtu.be/")) {
+    } else if (youtubeUrl.includes("/embed/")) {
 
-                youtubeId =
-                    youtubeUrl
-                        .split("youtu.be/")[1]
-                        .split("?")[0]
-                        .split("&")[0];
+        youtubeId = youtubeUrl
+            .split("/embed/")[1]
+            .split("?")[0]
+            .split("&")[0];
 
-            }
+    } else if (youtubeUrl.includes("/shorts/")) {
 
-            // youtube.com/embed/VIDEO_ID
-            else if (youtubeUrl.includes("/embed/")) {
+        youtubeId = youtubeUrl
+            .split("/shorts/")[1]
+            .split("?")[0]
+            .split("&")[0];
 
-                youtubeId =
-                    youtubeUrl
-                        .split("/embed/")[1]
-                        .split("?")[0]
-                        .split("&")[0];
+    }
 
-            }
+    if (youtubeId) {
 
-            // youtube.com/shorts/VIDEO_ID
-            else if (youtubeUrl.includes("/shorts/")) {
+        metaImage =
+            "https://img.youtube.com/vi/" +
+            youtubeId +
+            "/maxresdefault.jpg";
 
-                youtubeId =
-                    youtubeUrl
-                        .split("/shorts/")[1]
-                        .split("?")[0]
-                        .split("&")[0];
-
-            }
-
-
-            if (youtubeId) {
-
-                metaImage =
-                    "https://img.youtube.com/vi/" +
-                    youtubeId +
-                    "/maxresdefault.jpg";
-
-            }
-
-        }
+    }
+}
 
 
         /*
@@ -217,7 +196,7 @@
     property="og:image"
     content="<%= metaImage %>"
 >
-
+<!-- DEBUG IMAGE: <%= metaImage %> -->
 <meta
     property="og:image:secure_url"
     content="<%= metaImage %>"
