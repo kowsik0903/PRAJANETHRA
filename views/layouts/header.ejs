@@ -17,7 +17,7 @@
         "https://prajanethra.onrender.com";
 
     let metaImage =
-    "TEST_IMAGE_URL";
+    "https://prajanethra.onrender.com/logo.png";
 
     /*
      * ==========================================
@@ -82,7 +82,14 @@
 
     }
 
-   metaImage = "https://img.youtube.com/vi/QbKI7VIIiIc/maxresdefault.jpg";
+   if (youtubeId) {
+
+        metaImage =
+            "https://img.youtube.com/vi/" +
+            youtubeId +
+            "/hqdefault.jpg";
+
+    }
 }
 
 
@@ -188,7 +195,6 @@
     property="og:image"
     content="<%= metaImage %>"
 >
-<!-- DEBUG IMAGE: <%= metaImage %> -->
 <meta
     property="og:image:secure_url"
     content="<%= metaImage %>"
