@@ -41,13 +41,7 @@
                         <!-- VIDEO -->
 
                         <div class="ratio ratio-16x9">
-                            <div class="video-play-overlay">
-                                            <span>▶</span>
-                                        </div>
-
-                                        <span class="video-badge">
-                                            🎥 VIDEO
-                                        </span>
+                            
 
                             <% if (video.video_type === "upload" && video.video_url) { %>
 
@@ -225,50 +219,6 @@
     <% } %>
 
 </div>
-
-<style>
-
-.ratio {
-    position: relative;
-}
-
-.video-play-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
-    background: rgba(220, 53, 69, 0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 10;
-    pointer-events: none;
-}
-
-.video-play-overlay span {
-    color: white;
-    font-size: 28px;
-    margin-left: 4px;
-}
-
-.video-badge {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    background: #dc3545;
-    color: white;
-    padding: 5px 10px;
-    border-radius: 6px;
-    font-size: 12px;
-    font-weight: 600;
-    z-index: 10;
-    pointer-events: none;
-}
-
-</style>
 
 
 <script>
