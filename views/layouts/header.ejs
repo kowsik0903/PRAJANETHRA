@@ -19,6 +19,8 @@
     let metaImage =
     "https://prajanethra.onrender.com/logo.png";
 
+    let metaType = "article";
+
     /*
      * ==========================================
      * VIDEO PAGE
@@ -27,8 +29,11 @@
 
     if (typeof video !== "undefined" && video) {
 
-        metaTitle =
-            video.title || "PRAJANETHRA";
+        metaType = "video.other";
+
+    metaTitle =
+        "🎥 VIDEO NEWS | " +
+        (video.title || "PRAJANETHRA")
 
         metaDescription =
             video.short_description ||
@@ -222,7 +227,7 @@
 
 <meta
     property="og:type"
-    content="article"
+    content="<%= metaType %>"
 >
 
 <meta
