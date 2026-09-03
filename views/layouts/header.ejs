@@ -8,17 +8,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <%
-
-    /*
-     * ==========================================
-     * DEFAULT META VALUES
-     * ==========================================
-     */
-
-    let metaTitle = "PRAJANEATHRA";
+    let metaTitle = "PRAJANETHRA";
 
     let metaDescription =
-        "Latest Telugu News from PRAJANEATHRA";
+        "Latest Telugu News from PRAJANETHRA";
 
     let metaUrl =
         "https://prajanethra.onrender.com";
@@ -26,50 +19,23 @@
     let metaImage =
         "https://prajanethra.onrender.com/logo.png";
 
-    let isVideo = false;
-
 
     /*
      * ==========================================
      * VIDEO PAGE
      * ==========================================
-     *
-     * video-details controller sends:
-     *
-     * video
-     * categories
-     * item: video
-     *
      */
 
-    if (
-        typeof video !== "undefined" &&
-        video
-    ) {
-
-        isVideo = true;
+    if (typeof video !== "undefined" && video) {
 
         metaTitle =
             video.title || "PRAJANETHRA";
 
-
-        /*
-         * IMPORTANT:
-         * Use short_description
-         */
-
         metaDescription =
             video.short_description ||
+            video.description ||
             video.content ||
             "Latest video news from PRAJANETHRA";
-
-
-        /*
-         * IMPORTANT:
-         * Your actual route is:
-         *
-         * /videos/:id
-         */
 
         metaUrl =
             "https://prajanethra.onrender.com/videos/" +
@@ -78,7 +44,7 @@
 
         /*
          * ======================================
-         * YOUTUBE THUMBNAIL
+         * YOUTUBE VIDEO
          * ======================================
          */
 
@@ -87,15 +53,14 @@
             video.youtube_url.trim() !== ""
         ) {
 
-            let youtubeId = "";
-
             const youtubeUrl =
                 video.youtube_url.trim();
 
+            let youtubeId = "";
 
-            if (
-                youtubeUrl.includes("watch?v=")
-            ) {
+
+            // youtube.com/watch?v=VIDEO_ID
+            if (youtubeUrl.includes("watch?v=")) {
 
                 youtubeId =
                     youtubeUrl
@@ -104,25 +69,36 @@
 
             }
 
-            else if (
-                youtubeUrl.includes("youtu.be/")
-            ) {
+            // youtu.be/VIDEO_ID
+            else if (youtubeUrl.includes("youtu.be/")) {
 
                 youtubeId =
                     youtubeUrl
                         .split("youtu.be/")[1]
-                        .split("?")[0];
+                        .split("?")[0]
+                        .split("&")[0];
 
             }
 
-            else if (
-                youtubeUrl.includes("/embed/")
-            ) {
+            // youtube.com/embed/VIDEO_ID
+            else if (youtubeUrl.includes("/embed/")) {
 
                 youtubeId =
                     youtubeUrl
                         .split("/embed/")[1]
-                        .split("?")[0];
+                        .split("?")[0]
+                        .split("&")[0];
+
+            }
+
+            // youtube.com/shorts/VIDEO_ID
+            else if (youtubeUrl.includes("/shorts/")) {
+
+                youtubeId =
+                    youtubeUrl
+                        .split("/shorts/")[1]
+                        .split("?")[0]
+                        .split("&")[0];
 
             }
 
@@ -141,35 +117,32 @@
 
         /*
          * ======================================
-         * CLOUDINARY VIDEO THUMBNAIL
+         * CLOUDINARY UPLOADED VIDEO
          * ======================================
          */
-else if (
-    video.video_url &&
-    video.video_url.trim() !== ""
-) {
 
-    let cloudinaryVideo =
-        video.video_url.trim();
+        else if (
+            video.video_url &&
+            video.video_url.trim() !== ""
+        ) {
 
-    /*
-     * Convert Cloudinary video URL
-     * into a JPG thumbnail from the
-     * first frame.
-     */
+            let cloudinaryVideo =
+                video.video_url.trim();
 
-    metaImage =
-        cloudinaryVideo
-            .replace(
-                "/video/upload/",
-                "/video/upload/so_0,w_1200,h_630,c_fill/"
-            )
-            .replace(
-    /\.(mp4|webm|mov|mkv|3gp|avi|mpeg|mpg)$/i,
-    ".jpg"
-);
 
-}
+            metaImage =
+                cloudinaryVideo
+                    .replace(
+                        "/video/upload/",
+                        "/video/upload/so_0,w_1200,h_630,c_fill/"
+                    )
+                    .replace(
+                        /\.(mp4|webm|mov|mkv|3gp|avi|mpeg|mpg)$/i,
+                        ".jpg"
+                    );
+
+        }
+
     }
 
 
@@ -187,13 +160,11 @@ else if (
         metaTitle =
             item.title || "PRAJANETHRA";
 
-
         metaDescription =
             item.short_description ||
             item.description ||
             item.content ||
             "Latest Telugu News from PRAJANETHRA";
-
 
         metaUrl =
             "https://prajanethra.onrender.com/news/" +
@@ -205,14 +176,13 @@ else if (
             item.image.trim() !== ""
         ) {
 
-            metaImage = item.image;
+            metaImage =
+                item.image;
 
         }
 
     }
-
 %>
-
 
 <title>
     <%= metaTitle %>
