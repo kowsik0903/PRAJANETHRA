@@ -89,12 +89,12 @@
 
    if (youtubeId) {
 
-        metaImage =
-            "https://img.youtube.com/vi/" +
-            youtubeId +
-            "/hqdefault.jpg";
+    metaImage =
+        "https://prajanethra.onrender.com/videos/" +
+        video.id +
+        "/preview.jpg";
 
-    }
+}
 }
 
 
@@ -104,29 +104,13 @@
          * ======================================
          */
 
-        else if (
-            video.video_url &&
-            video.video_url.trim() !== ""
-        ) {
+        } else if (video.video_url && video.video_url.trim() !== "") {
 
-            let cloudinaryVideo =
-                video.video_url.trim();
-
-
-            metaImage =
-                cloudinaryVideo
-                    .replace(
-                        "/video/upload/",
-                        "/video/upload/so_0,w_1200,h_630,c_fill/"
-                    )
-                    .replace(
-                        /\.(mp4|webm|mov|mkv|3gp|avi|mpeg|mpg)$/i,
-                        ".jpg"
-                    );
-
-        }
-
-    }
+    metaImage =
+        "https://prajanethra.onrender.com/videos/" +
+        video.id +
+        "/preview.jpg";
+}
 
 
     /*
