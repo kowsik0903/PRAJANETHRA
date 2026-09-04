@@ -17,9 +17,10 @@
         "https://prajanethra.onrender.com";
 
     let metaImage =
-    "https://prajanethra.onrender.com/logo.png";
+        "https://prajanethra.onrender.com/logo.png";
 
     let metaType = "article";
+
 
     /*
      * ==========================================
@@ -31,9 +32,9 @@
 
         metaType = "video.other";
 
-    metaTitle =
-        "🎥 VIDEO NEWS | " +
-        (video.title || "PRAJANETHRA")
+        metaTitle =
+            "🎥 VIDEO NEWS | " +
+            (video.title || "PRAJANETHRA");
 
         metaDescription =
             video.short_description ||
@@ -52,65 +53,79 @@
          * ======================================
          */
 
-        if (video.youtube_url && video.youtube_url.trim() !== "") {
+        if (
+            video.youtube_url &&
+            video.youtube_url.trim() !== ""
+        ) {
 
-    const youtubeUrl = video.youtube_url.trim();
+            const youtubeUrl =
+                video.youtube_url.trim();
 
-    let youtubeId = "";
+            let youtubeId = "";
 
-    if (youtubeUrl.includes("watch?v=")) {
 
-        youtubeId = youtubeUrl
-            .split("watch?v=")[1]
-            .split("&")[0];
+            if (youtubeUrl.includes("watch?v=")) {
 
-    } else if (youtubeUrl.includes("youtu.be/")) {
+                youtubeId =
+                    youtubeUrl
+                        .split("watch?v=")[1]
+                        .split("&")[0];
 
-        youtubeId = youtubeUrl
-            .split("youtu.be/")[1]
-            .split("?")[0]
-            .split("&")[0];
+            } else if (youtubeUrl.includes("youtu.be/")) {
 
-    } else if (youtubeUrl.includes("/embed/")) {
+                youtubeId =
+                    youtubeUrl
+                        .split("youtu.be/")[1]
+                        .split("?")[0]
+                        .split("&")[0];
 
-        youtubeId = youtubeUrl
-            .split("/embed/")[1]
-            .split("?")[0]
-            .split("&")[0];
+            } else if (youtubeUrl.includes("/embed/")) {
 
-    } else if (youtubeUrl.includes("/shorts/")) {
+                youtubeId =
+                    youtubeUrl
+                        .split("/embed/")[1]
+                        .split("?")[0]
+                        .split("&")[0];
 
-        youtubeId = youtubeUrl
-            .split("/shorts/")[1]
-            .split("?")[0]
-            .split("&")[0];
+            } else if (youtubeUrl.includes("/shorts/")) {
 
-    }
+                youtubeId =
+                    youtubeUrl
+                        .split("/shorts/")[1]
+                        .split("?")[0]
+                        .split("&")[0];
+            }
 
-   if (youtubeId) {
 
-    metaImage =
-        "https://prajanethra.onrender.com/videos/" +
-        video.id +
-        "/preview.jpg";
+            if (youtubeId) {
 
-}
-}
+                metaImage =
+                    "https://prajanethra.onrender.com/videos/" +
+                    video.id +
+                    "/preview.jpg";
+            }
+
+        }
 
 
         /*
          * ======================================
-         * CLOUDINARY UPLOADED VIDEO
+         * DIRECT / CLOUDINARY VIDEO
          * ======================================
          */
 
-        } else if (video.video_url && video.video_url.trim() !== "") {
+        else if (
+            video.video_url &&
+            video.video_url.trim() !== ""
+        ) {
 
-    metaImage =
-        "https://prajanethra.onrender.com/videos/" +
-        video.id +
-        "/preview.jpg";
-}
+            metaImage =
+                "https://prajanethra.onrender.com/videos/" +
+                video.id +
+                "/preview.jpg";
+        }
+
+    }
 
 
     /*
@@ -145,9 +160,7 @@
 
             metaImage =
                 item.image;
-
         }
-
     }
 %>
 
