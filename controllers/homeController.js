@@ -2,60 +2,56 @@ const db = require("../config/db");
 
 exports.home = (req, res) => {
 
-    const page = parseInt(req.query.page) || 1;
+    // Independent pagination for news and videos
+    const newsPage = Math.max(1, parseInt(req.query.newsPage, 10) || 1);
+    const videoPage = Math.max(1, parseInt(req.query.videoPage, 10) || 1);
 
-    const limit = 6;
+    const newsLimit = 6;
+    const videoLimit = 3;
 
-    const offset = (page - 1) * limit;
+    const newsOffset = (newsPage - 1) * newsLimit;
+    const videoOffset = (videoPage - 1) * videoLimit;
 
-
-    // Total News Count
-    const countSql = `
+    // Count published news articles
+    const countNewsSql = `
         SELECT COUNT(*) AS total
         FROM news
-        WHERE status='Published'
+        WHERE status = 'Published'
     `;
 
-    db.query(countSql, (err, countResult) => {
+    db.query(countNewsSql, (err, newsCountResult) => {
+        if (err) return res.status(500).send(err);
 
-        if (err) return res.send(err);
+        const totalNews = newsCountResult[0].total;
+        const newsTotalPages = Math.ceil(totalNews / newsLimit);
 
-        const totalNews = countResult[0].total;
-
-        const totalPages = Math.ceil(totalNews / limit);
-
-
-        // Get News with Pagination
+        // Fetch current page of news articles
         const newsSql = `
             SELECT news.*, categories.category_name
             FROM news
             LEFT JOIN categories
-            ON news.category_id = categories.id
-            WHERE news.status='Published'
+                ON news.category_id = categories.id
+            WHERE news.status = 'Published'
             ORDER BY news.created_at DESC
             LIMIT ? OFFSET ?
         `;
 
-        db.query(newsSql, [limit, offset], (err, news) => {
+        db.query(newsSql, [newsLimit, newsOffset], (err, news) => {
+            if (err) return res.status(500).send(err);
 
-            if (err) return res.send(err);
-
-
-            // Breaking News
+            // Fetch breaking news
             const breakingSql = `
                 SELECT *
                 FROM news
-                WHERE is_breaking=1
+                WHERE is_breaking = 1
                 ORDER BY created_at DESC
                 LIMIT 10
             `;
 
             db.query(breakingSql, (err, breakingNews) => {
+                if (err) return res.status(500).send(err);
 
-                if (err) return res.send(err);
-
-
-                // Categories
+                // Fetch categories
                 const categorySql = `
                     SELECT *
                     FROM categories
@@ -63,71 +59,64 @@ exports.home = (req, res) => {
                 `;
 
                 db.query(categorySql, (err, categories) => {
+                    if (err) return res.status(500).send(err);
 
-                    if (err) return res.send(err);
-
-
-                    // Latest YouTube Videos
-                    const videoSql = `
-                        SELECT videos.*, categories.category_name
+                    // Count published videos
+                    const countVideosSql = `
+                        SELECT COUNT(*) AS total
                         FROM videos
-                        LEFT JOIN categories
-                        ON videos.category_id = categories.id
-                        WHERE videos.status='published'
-                        ORDER BY videos.created_at DESC
-                        LIMIT 3
+                        WHERE status = 'published'
                     `;
 
-                    db.query(videoSql, (err, videos) => {
+                    db.query(countVideosSql, (err, videoCountResult) => {
+                        if (err) return res.status(500).send(err);
 
-                        if (err) return res.send(err);
+                        const totalVideos = videoCountResult[0].total;
+                        const videoTotalPages =
+                            Math.ceil(totalVideos / videoLimit);
 
+                        // Fetch current page of videos
+                        const videoSql = `
+                            SELECT videos.*, categories.category_name
+                            FROM videos
+                            LEFT JOIN categories
+                                ON videos.category_id = categories.id
+                            WHERE videos.status = 'published'
+                            ORDER BY videos.created_at DESC
+                            LIMIT ? OFFSET ?
+                        `;
 
-                        const videoLimit = 3;
-const videoOffset = (page - 1) * videoLimit;
+                        db.query(
+                            videoSql,
+                            [videoLimit, videoOffset],
+                            (err, videos) => {
+                                if (err) {
+                                    console.error(err);
+                                    return res.status(500)
+                                        .send("Unable to load videos");
+                                }
 
-const videoSql = `
-    SELECT videos.*, categories.category_name
-    FROM videos
-    LEFT JOIN categories
-    ON videos.category_id = categories.id
-    WHERE videos.status = 'published'
-    ORDER BY videos.created_at DESC
-    LIMIT ? OFFSET ?
-`;
+                                res.render("user/index", {
+                                    news,
+                                    videos,
+                                    breakingNews,
+                                    categories,
 
-db.query(videoSql, [videoLimit, videoOffset], (err, videos) => {
+                                    newsCurrentPage: newsPage,
+                                    newsTotalPages,
 
-    if (err) {
-        console.error("Error fetching videos:", err);
-        return res.send(err);
-    }
-
-    res.render("user/index", {
-
-        news,
-        breakingNews,
-        categories,
-        videos,
-
-        currentPage: page,
-        totalPages
-
-    });
-
-});
-
+                                    videoCurrentPage: videoPage,
+                                    videoTotalPages
+                                });
+                            }
+                        );
                     });
-
                 });
-
             });
-
         });
-
     });
-
 };
+
 
 exports.newsDetails = (req, res) => {
 
@@ -141,6 +130,7 @@ exports.newsDetails = (req, res) => {
 
             if (err) return res.send(err);
 
+            // Fetch current news article
             const sql = `
                 SELECT news.*, categories.category_name
                 FROM news
@@ -159,17 +149,59 @@ exports.newsDetails = (req, res) => {
 
                 const item = result[0];
 
-                // Fetch categories for the navbar
-                db.query("SELECT * FROM categories", (err, categories) => {
+                                    // Fetch related published news from the same date
+                                    const relatedSql = `
 
-                    if (err) return res.send(err);
+                                            SELECT
+                                                n.id,
+                                                n.title,
+                                                n.description,
+                                                n.image,
+                                                n.created_at,
+                                                c.category_name
+                                            FROM news n
+                                            LEFT JOIN categories c
+                                                ON n.category_id = c.id
+                                            WHERE DATE(n.created_at) = DATE(?)
+                                              AND n.id != ?
+                                              AND n.status = 'published'
+                                              AND NOT EXISTS (
+                                                  SELECT 1
+                                                  FROM news duplicate
+                                                  WHERE duplicate.title = n.title
+                                                    AND duplicate.id < n.id
+                                                    AND duplicate.status = 'published'
+                                              )
+                                            ORDER BY n.created_at DESC, n.id DESC
+                                            LIMIT 6
 
-                    res.render("user/news-details", {
-                        item,
-                        categories
-                    });
+                `;
 
-                });
+                db.query(
+                    relatedSql,
+                    [item.created_at, item.id],
+                    (err, relatedNews) => {
+
+                        if (err) return res.send(err);
+
+                        // Fetch categories for the navbar
+                        db.query(
+                            "SELECT * FROM categories",
+                            (err, categories) => {
+
+                                if (err) return res.send(err);
+
+                                res.render("user/news-details", {
+                                    item,
+                                    categories,
+                                    relatedNews
+                                });
+
+                            }
+                        );
+
+                    }
+                );
 
             });
 
@@ -177,6 +209,7 @@ exports.newsDetails = (req, res) => {
     );
 
 };
+
 
 exports.categoryNews = (req, res) => {
 

@@ -1,0 +1,38 @@
+
+<% if (videoTotalPages > 1) { %>
+
+<nav class="my-4" aria-label="Video pagination" id="video-pagination">
+    <ul class="pagination justify-content-center flex-wrap">
+
+        <li class="page-item <%= videoCurrentPage === 1 ? 'disabled' : '' %>">
+            <a class="page-link"
+               href="/?newsPage=<%= newsCurrentPage %>&videoPage=<%= videoCurrentPage - 1 %>#video-news">
+                Previous
+            </a>
+        </li>
+
+       <%
+const startPage = Math.max(1, videoCurrentPage - 2);
+const endPage = Math.min(videoTotalPages, videoCurrentPage + 2);
+%>
+
+<% for (let p = startPage; p <= endPage; p++) { %>
+  <li class="page-item <%= p === videoCurrentPage ? 'active' : '' %>">
+    <a class="page-link"
+       href="/?newsPage=<%= newsCurrentPage %>&videoPage=<%= p %>#video-news">
+      <%= p %>
+    </a>
+  </li>
+<% } %>
+
+        <li class="page-item <%= videoCurrentPage === videoTotalPages ? 'disabled' : '' %>">
+            <a class="page-link"
+               href="/?newsPage=<%= newsCurrentPage %>&videoPage=<%= videoCurrentPage + 1 %>#video-news">
+                Next
+            </a>
+        </li>
+
+    </ul>
+</nav>
+
+<% } %>

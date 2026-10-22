@@ -63,6 +63,10 @@
 
 </div>
 
+
+
+
+
 <hr class="my-4">
 
 <h5 class="fw-bold mb-3">
@@ -166,6 +170,72 @@ function copyLink(){
 }
 
 </script>
+
+<!-- Related News Section -->
+
+<% if (relatedNews && relatedNews.length > 0) { %>
+
+<section class="related-news mt-4 mb-4">
+
+    <h5 class="related-news-heading">Related News</h5>
+
+    <div class="related-news-grid">
+
+        <% relatedNews.forEach(news => { %>
+
+        <article class="related-news-card">
+
+            <a href="/news/<%= news.id %>" class="related-news-link">
+
+                <% if (news.image) { %>
+                <img
+                    src="<%= news.image %>"
+                    alt="<%= news.title %>"
+                    class="related-news-image"
+                    loading="lazy">
+                <% } %>
+
+                <div class="related-news-body">
+
+                    <span class="related-news-category">
+                        <%= news.category_name || "News" %>
+                    </span>
+
+                    <h6 class="related-news-title">
+                        <%= news.title %>
+                    </h6>
+
+                    <% if (news.description) { %>
+                    <p class="related-news-description">
+                        <%= news.description %>
+                    </p>
+                    <% } %>
+
+                    <small class="related-news-date">
+                        <i class="bi bi-calendar-event"></i>
+                        <%= new Date(news.created_at).toLocaleDateString() %>
+                    </small>
+
+                    <span class="related-news-read-more">
+                        Read More →
+                    </span>
+
+                </div>
+
+            </a>
+
+        </article>
+
+        <% }) %>
+
+    </div>
+
+</section>
+
+<% } %>
+
+<!-- End Related News -->
+
 
 <hr class="my-4">
 

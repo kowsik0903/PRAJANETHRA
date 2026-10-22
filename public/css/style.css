@@ -1060,3 +1060,216 @@ img {
     user-select: none;
     -webkit-user-drag: none;
 }
+
+
+/* PRAJANETHRA Related News */
+
+/* PRAJANETHRA Related News */
+.related-news {
+    margin-top: 28px;
+}
+
+.related-news-heading {
+    font-size: 20px;
+    font-weight: 700;
+    color: #dc3545;
+    border-left: 3px solid #dc3545;
+    padding-left: 10px;
+    margin-bottom: 16px;
+}
+
+.related-news-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    align-items: stretch;
+}
+
+.related-news-card {
+    min-width: 0;
+    height: 100%;
+    background: #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.09);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.related-news-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 16px rgba(0, 0, 0, 0.14);
+}
+
+.related-news-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    color: inherit;
+    text-decoration: none;
+}
+
+.related-news-image {
+    display: block;
+    width: 100%;
+    height: 130px;
+    flex-shrink: 0;
+    object-fit: cover;
+    object-position: center;
+    background: #f1f1f1;
+}
+
+.related-news-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+    padding: 10px;
+}
+
+.related-news-category {
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    background: #dc0000;
+    color: #fff;
+    font-size: 9px;
+    padding: 3px 7px;
+    border-radius: 20px;
+    margin-bottom: 9px;
+}
+
+.related-news-title {
+    font-size: 13px;
+    line-height: 1.55;
+    font-weight: 700;
+    margin: 0 0 7px;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.related-news-description {
+    color: #777;
+    font-size: 11px;
+    line-height: 1.5;
+    margin-bottom: 9px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.related-news-date {
+    color: #888;
+    font-size: 10px;
+    margin-top: auto;
+    padding-top: 6px;
+}
+
+.related-news-read-more {
+    display: inline-block;
+    align-self: flex-end;
+    background: #002f65;
+    color: #fff;
+    font-size: 10px;
+    font-weight: 600;
+    border-radius: 20px;
+    padding: 6px 11px;
+    margin-top: 8px;
+}
+
+.related-news-link:hover .related-news-title {
+    color: #dc3545;
+}
+
+/* Tablet */
+@media (max-width: 768px) {
+    .related-news-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .related-news-image {
+        height: 120px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 480px) {
+    .related-news-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .related-news-image {
+        height: 100px;
+    }
+
+    .related-news-body {
+        padding: 8px;
+    }
+
+    .related-news-title {
+        font-size: 12px;
+    }
+}
+
+
+
+/* Fix related news image sizing */
+.related-news-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    align-items: stretch;
+}
+
+.related-news-grid .related-news-card {
+    min-width: 0;
+    height: 100%;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.related-news-grid .related-news-link {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+/* Force every thumbnail to the same shape */
+.related-news-grid .related-news-card img.related-news-image {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 16 / 9;
+    object-fit: cover !important;
+    object-position: center !important;
+    flex-shrink: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+}
+
+.related-news-grid .related-news-body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+
+@media (max-width: 768px) {
+    .related-news-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .related-news-grid .related-news-image {
+        aspect-ratio: 16 / 9;
+    }
+}
