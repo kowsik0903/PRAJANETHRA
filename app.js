@@ -1,5 +1,4 @@
 
-
 const express = require("express");
 require("dotenv").config();
 const session = require("express-session");
@@ -10,6 +9,14 @@ const db = require("./config/db");
 const categoryRoutes = require("./routes/categoryRoutes");
 
 const app = express();
+
+// Request logging
+app.use((req, res, next) => {
+    console.log(
+        `[${new Date().toISOString()}] ${req.method} ${req.originalUrl}`
+    );
+    next();
+});
 
 app.use((req, res, next) => {
     res.setHeader(
@@ -78,7 +85,16 @@ app.use("/admin", adminRoutes);
 const contactRoutes = require("./routes/contactRoutes");
 app.use("/contact", contactRoutes);
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
+
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`🚀 PRAJANETHRA server running on port ${PORT}`);
 });
 
+// Server health check
+app.get("/health", (req, res) => {
+    res.status(200).json({
+        status: "OK",
+        message: "PRAJANETHRA server is running",
+        timestamp: new Date().toISOString()
+    });
+});
