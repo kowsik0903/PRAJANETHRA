@@ -1,3 +1,4 @@
+
 const mysql = require("mysql2");
 
 const db = mysql.createPool({
@@ -5,7 +6,7 @@ const db = mysql.createPool({
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
-    port: process.env.DB_PORT,
+    port: Number(process.env.DB_PORT),
 
     charset: "utf8mb4",
 
@@ -14,20 +15,17 @@ const db = mysql.createPool({
     },
 
     waitForConnections: true,
-    connectionLimit: 10,
+    connectionLimit: 5,
     queueLimit: 0
 });
 
 db.getConnection((err, connection) => {
-
     if (err) {
-        console.error("❌ Database Connection Failed");
-        console.error(err);
+        console.error("❌ TiDB Connection Failed:", err.message);
         return;
     }
 
-    console.log("✅ Aiven MySQL Connected Successfully");
-
+    console.log("✅ TiDB Cloud Connected Successfully");
     connection.release();
 });
 
